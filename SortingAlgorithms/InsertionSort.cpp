@@ -1,25 +1,20 @@
-// #####################################
+// ###############################
 // Author: SykePhaSis
-// Subject: SelectionSort
-// Date:10/4/2023
-// #####################################
+// Subject: InsertionSort
+// Date:11/4/2023
+// ###############################
 
-void SelectionSort(int (&array)[], int array_length){
-  int x, tmp;
-  x = 0;
-  for(int j = array_length; j > 0; j--){
-    for(int i = (array_length - j ); i < array_length; i++){
-      if(array[array_length - i] < array[x]){
-        x = i;
-      }
+void InsertionSort(int (&array)[], int array_length){
+  int tmp;
+  for(int i = 1; i < array_length; i++){
+    int j = i - 1;
+    tmp = array[i];
+    while(j>=0 && array[j] > tmp){
+      array[j+1] = array[j];
+      j--;
     }
-    if(array[array_length - j] > array[array_length - x]){
-      tmp = array[array_length - j];
-      array[array_length- j] = array[array_length - x];
-      array[array_length- x] = tmp;
-    }
+    array[j + 1] = tmp;
   }
-  
 }
 
 // ##########################
@@ -41,7 +36,7 @@ void test(){
   int arr_length = sizeof(arr)/sizeof(arr[0]);
   std::cout << "Before: " << std::endl;
   OutputArr(arr, arr_length);
-  SelectionSort(arr, arr_length);
+  InsertionSort(arr, arr_length);
   std::cout << "After: " << std::endl;
   OutputArr(arr, arr_length);
 }
