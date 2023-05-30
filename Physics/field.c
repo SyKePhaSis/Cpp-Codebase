@@ -4,11 +4,12 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
-#define GRID_STEP 200
+#define GRID_STEP 50
 #define MAX_ENTITIES 5
 #define FORCE_STATIC 20.0f
-#define SOURCE_RADIUS 25
-#define POINT_RADIUS 2
+#define SOURCE_RADIUS 15
+#define POINT_RADIUS 1
+#define MAX_POINTS 1600
 
 typedef struct
 {
@@ -31,15 +32,17 @@ typedef struct
 typedef struct
 {
     int counter;
-    Point Plane[];
+    Point Plane[MAX_POINTS];
 } PointsList;
 
-void DrawGridVec(void);
 void SpawnSource(EntityList *e);
 void Update(EntityList *e);
-void printEntityList(EntityList *e);
+void PrintEntityList(EntityList *e);
+void PrintPlaneList(PointsList *pl);
 void InitializePoints(PointsList *pl);
 void DrawPoints(PointsList *pl);
+void DrawForceVectorLines(PointsList *pl, EntityList *e);
+void DrawGridVec(void);
 
 int main(void)
 {
@@ -47,8 +50,9 @@ int main(void)
     SetTargetFPS(30);
 
     // INITIALIZE VARIABLES
-    bool ShowGrid = true;
+    bool ShowGrid = false;
     bool ShowPoints = false;
+    bool ShowForceLines = false;
 
     EntityList e;
     e.counter = 0;
@@ -57,10 +61,11 @@ int main(void)
     pl.counter = 0;
 
     InitializePoints(&pl);
+    PrintPlaneList(&pl);
 
     while (!WindowShouldClose())
     {
-        // ClearBackground(BLACK);
+        ClearBackground(BLACK);
         BeginDrawing();
 
         // DRAW TITLE
@@ -72,19 +77,30 @@ int main(void)
         // DISABLE GRID
         if (IsKeyPressed(KEY_G))
         {
-            ShowGrid = false;
+            ShowGrid = !ShowGrid;
         }
 
         // DRAW POINTS
         if (ShowPoints)
         {
-            printf("Cant Handle This Shit");
             DrawPoints(&pl);
         }
         // DISABLE POINTS
         if (IsKeyPressed(KEY_P))
         {
-            ShowPoints = false;
+            ShowPoints = !ShowPoints;
+        }
+
+        // DRAW FORCE LINES
+        if (ShowForceLines)
+        {
+            DrawForceVectorLines(&pl, &e);
+        }
+
+        // DISABLE FORCE LINES
+        if (IsKeyPressed(KEY_F))
+        {
+            ShowForceLines = !ShowForceLines;
         }
 
         // UPDATE
@@ -130,12 +146,23 @@ void SpawnSource(EntityList *e)
 }
 
 // USED FOR DEBUGING
-void printEntityList(EntityList *e)
+void PrintEntityList(EntityList *e)
 {
     for (int i = 0; i < e->counter; i++)
     {
         printf("%f ", e->entities[i].pos.x);
         printf("%f \n", e->entities[i].pos.y);
+    }
+}
+
+void PrintPlaneList(PointsList *pl)
+{
+    printf("Started");
+    printf("%i", pl->counter);
+    for (int i = 0; i < pl->counter; i++)
+    {
+        printf("%f ", pl->Plane[i].pos.x);
+        printf("%f \n", pl->Plane[i].pos.y);
     }
 }
 
@@ -150,9 +177,9 @@ void Update(EntityList *e)
 
 void InitializePoints(PointsList *pl)
 {
-    for (int x = GRID_STEP / 2; x < (SCREEN_WIDTH - GRID_STEP / 2); x += GRID_STEP)
+    for (int x = GRID_STEP / 2; x < SCREEN_WIDTH; x += GRID_STEP)
     {
-        for (int y = GRID_STEP / 2; y < (SCREEN_HEIGHT - GRID_STEP / 2); y += GRID_STEP)
+        for (int y = GRID_STEP / 2; y < SCREEN_HEIGHT; y += GRID_STEP)
         {
             Point p;
             p.pos.x = x;
@@ -161,13 +188,24 @@ void InitializePoints(PointsList *pl)
             pl->counter += 1;
         }
     }
-    printf("Finished Initializing");
 }
 
+// DRAW THE CARTESIAN CORDINATES ON THE FIELD
 void DrawPoints(PointsList *pl)
 {
     for (int i = 0; i < pl->counter; i++)
     {
         DrawCircle(pl->Plane[i].pos.x, pl->Plane[i].pos.y, POINT_RADIUS, WHITE);
+    }
+}
+
+void DrawForceVectorLines(PointsList *pl, EntityList *e)
+{
+    for (int i = 0; i < e->counter; i++)
+    {
+        for (int j = 0; j < pl->counter; j++)
+        {
+            DrawLineEx(e->entities[i].pos, pl->Plane[j].pos, 1.0f, RED);
+        }
     }
 }

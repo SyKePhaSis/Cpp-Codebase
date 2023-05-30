@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.js": "javascript",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "raylib.h": "c"
     }
 }
