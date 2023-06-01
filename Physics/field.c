@@ -6,33 +6,37 @@
 #define SCREEN_HEIGHT 800
 #define GRID_STEP 50
 #define MAX_ENTITIES 5
-#define FORCE_STATIC 20.0f
+#define FORCE_STATIC 1.0f
 #define SOURCE_RADIUS 15
 #define POINT_RADIUS 1
 #define MAX_POINTS 1600
+#define POINT_MASS 1
+#define FORCE_CONSTANT 0.0000001
 
 typedef struct
 {
-    Vector2 pos;
-    float force;
+  Vector2 pos;
+  float force;
 } source;
 
 typedef struct
 {
-    int counter;
-    source entities[MAX_ENTITIES];
+  int counter;
+  source entities[MAX_ENTITIES];
 } EntityList;
 
 typedef struct
 {
-    Vector2 pos;
-    Vector2 fvec;
+  int counter;
+  Vector2 pos;
+  Vector2 fvec;
+  Vector2 flist[MAX_ENTITIES];
 } Point;
 
 typedef struct
 {
-    int counter;
-    Point Plane[MAX_POINTS];
+  int counter;
+  Point Plane[MAX_POINTS];
 } PointsList;
 
 void SpawnSource(EntityList *e);
@@ -40,6 +44,12 @@ void Update(EntityList *e);
 void PrintEntityList(EntityList *e);
 void PrintPlaneList(PointsList *pl);
 void InitializePoints(PointsList *pl);
+float CalculateForce(source s, Vector2 e);
+float GetDistance(Vector2 s, Vector2 e);
+float GetMagn(Vector2 vec);
+Vector2 ScalarVector(float scalar, Vector2 *vec);
+void NormalizeVector(Vector2 *vec);
+void ProcessPoints(PointsList *pl, EntityList *e);
 void DrawPoints(PointsList *pl);
 void DrawForceVectorLines(PointsList *pl, EntityList *e);
 void DrawGridVec(void);
@@ -61,7 +71,6 @@ int main(void)
     pl.counter = 0;
 
     InitializePoints(&pl);
-    PrintPlaneList(&pl);
 
     while (!WindowShouldClose())
     {
@@ -94,7 +103,7 @@ int main(void)
         // DRAW FORCE LINES
         if (ShowForceLines)
         {
-            DrawForceVectorLines(&pl, &e);
+            ProcessPoints(&pl, &e);
         }
 
         // DISABLE FORCE LINES
@@ -141,8 +150,6 @@ void SpawnSource(EntityList *e)
     s.force = FORCE_STATIC;
     e->entities[e->counter] = s;
     e->counter += 1;
-    printf("%f ", e->entities[0].pos.x);
-    printf("%f \n", e->entities[e->counter - 1].pos.y);
 }
 
 // USED FOR DEBUGING
@@ -157,8 +164,6 @@ void PrintEntityList(EntityList *e)
 
 void PrintPlaneList(PointsList *pl)
 {
-    printf("Started");
-    printf("%i", pl->counter);
     for (int i = 0; i < pl->counter; i++)
     {
         printf("%f ", pl->Plane[i].pos.x);
@@ -201,11 +206,84 @@ void DrawPoints(PointsList *pl)
 
 void DrawForceVectorLines(PointsList *pl, EntityList *e)
 {
-    for (int i = 0; i < e->counter; i++)
+    for (int i = 0; i < pl->counter; i++)
     {
-        for (int j = 0; j < pl->counter; j++)
+        for (int j = 0; j < e->counter; j++)
         {
-            DrawLineEx(e->entities[i].pos, pl->Plane[j].pos, 1.0f, RED);
+            DrawLineEx(e->entities[j].pos, pl->Plane[i].pos, 1.0f, RED);
         }
     }
+}
+
+// HELPER FUNCTIONS
+
+float GetMagn(Vector2 vec)
+{
+    float magn = sqrt(pow(vec.x, 2) + pow(vec.y, 2));
+    return magn;
+}
+
+void NormalizeVector(Vector2 *vec)
+{
+    float d = GetMagn(*vec);
+    vec->x = vec->x / d;
+    vec->y = vec->y / d;
+}
+
+Vector2 DistanceVec(Vector2 s, Vector2 e)
+{
+    Vector2 dv;
+    dv.x = s.x - e.x;
+    dv.y = s.y - e.y;
+    NormalizeVector(&dv);
+    return dv;
+}
+
+float GetDistance(Vector2 s, Vector2 e)
+{
+    float dx = s.x - e.x;
+    float dy = s.y - e.y;
+    float d = sqrt(pow(dx, 2) + pow(dy, 2));
+    return d;
+}
+
+Vector2 ScalarVector(float s, Vector2 *vec)
+{
+    Vector2 sv;
+    sv.x = vec->x * s;
+    sv.y = vec->y * s;
+    return sv;
+}
+
+// POINTS
+
+void ProcessPoints(PointsList *pl, EntityList *e)
+{
+    for (int i = 0; i < pl->counter; i++)
+    {
+      for (int j = 0; j < e->counter; j++)
+        {
+            float f = CalculateForce(e->entities[j], pl->Plane[i].pos);
+            Vector2 dv = DistanceVec(e->entities[j].pos, pl->Plane[i].pos);
+	    dv = ScalarVector(15.0f, &dv);
+            dv.x = dv.x + pl->Plane[i].pos.x;
+            dv.y = dv.y + pl->Plane[i].pos.y;
+            DrawLineEx(dv, pl->Plane[i].pos, 1.0f, RED);
+        }
+    }
+}
+
+// FORCE
+
+float CalculateForce(source s, Vector2 e)
+{
+    float r = GetDistance(s.pos, e);
+    float f = s.force / pow(r, 2) * FORCE_CONSTANT;
+    return f;
+}
+
+Vector2 ForceVect(float f, Vector2 fv)
+{
+    fv = ScalarVector(f, &fv);
+    return fv;
 }
