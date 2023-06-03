@@ -4,14 +4,15 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
-#define GRID_STEP 50
+#define GRID_STEP 10
 #define MAX_ENTITIES 5
 #define FORCE_STATIC 1.0f
-#define SOURCE_RADIUS 15
+#define SOURCE_RADIUS 10
 #define POINT_RADIUS 1
-#define MAX_POINTS 1600
+#define MAX_POINTS 10000
 #define POINT_MASS 1
-#define FORCE_CONSTANT 0.0000001
+#define FORCE_CONSTANT pow(10,6)
+#define F_MAX 20.0f
 
 typedef struct
 {
@@ -29,7 +30,7 @@ typedef struct
 {
   int counter;
   Vector2 pos;
-  Vector2 fvec;
+  Vector2 fv;
   Vector2 flist[MAX_ENTITIES];
 } Point;
 
@@ -53,6 +54,8 @@ void ProcessPoints(PointsList *pl, EntityList *e);
 void DrawPoints(PointsList *pl);
 void DrawForceVectorLines(PointsList *pl, EntityList *e);
 void DrawGridVec(void);
+void AddForcePoint(Point *p, Vector2 f);
+void ForceSummation(Point *p);
 
 int main(void)
 {
@@ -261,16 +264,44 @@ void ProcessPoints(PointsList *pl, EntityList *e)
 {
     for (int i = 0; i < pl->counter; i++)
     {
+      pl->Plane[i].counter = 0;
       for (int j = 0; j < e->counter; j++)
         {
             float f = CalculateForce(e->entities[j], pl->Plane[i].pos);
             Vector2 dv = DistanceVec(e->entities[j].pos, pl->Plane[i].pos);
-	    dv = ScalarVector(15.0f, &dv);
-            dv.x = dv.x + pl->Plane[i].pos.x;
-            dv.y = dv.y + pl->Plane[i].pos.y;
-            DrawLineEx(dv, pl->Plane[i].pos, 1.0f, RED);
+	    if(f > F_MAX)
+	      {
+		f = F_MAX;
+	      }
+	    dv = ScalarVector(f, &dv);
+	    AddForcePoint(&(pl->Plane[i]), dv);
         }
+      ForceSummation(&(pl->Plane[i]));
+      DrawLineEx(pl->Plane[i].fv, pl->Plane[i].pos, 1.0f, RED);
     }
+}
+
+
+//ADD INDIVIDUAL FORCE TO POINT
+void AddForcePoint(Point *p, Vector2 f)
+{
+  p->flist[p->counter] = f;
+  p->counter += 1;
+}
+
+void ForceSummation(Point *p)
+{
+  Vector2 fv;
+  fv.x = 0;
+  fv.y = 0;
+  for(int i = 0; i < p->counter; i++)
+  {
+    fv.x += p->flist[i].x;
+    fv.y += p->flist[i].y;
+  }
+  fv.x = fv.x + p->pos.x;
+  fv.y = fv.y + p->pos.y;
+  p->fv = fv;
 }
 
 // FORCE
