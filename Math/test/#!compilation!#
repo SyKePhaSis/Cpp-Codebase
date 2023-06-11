@@ -1,0 +1,29 @@
+-*- mode: compilation; default-directory: "d:/Data/ShortcutLibrary/Programming/Application/C++/Codebase/Math/test/" -*-
+Compilation started at Sun Jun 11 17:06:03
+
+gcc Lines.c -o Lines.o && ./Lines.o
+STARTING TESTING ON LINES
+Equation: y = 1.000000x + 2.000000
+Matrix Representation: 
+[
+1.000000 
+2.000000 
+]
+
+Transforming line(y = 1.000000x + 0.000000) to matrix.
+The Matrix:
+[
+1.000000 
+0.000000 
+]
+Point(<1.000000,1.000000>) is on line(y = 1.000000x + 0.000000).
+Point(<2.000000,4.000000>) is NOT on line(y = 1.000000x + 0.000000).
+
+Equation: y = 3.000000x + -2.000000
+Matrix Representation: 
+[
+3.000000 
+-2.000000 
+]
+Point(<1.000000,1.000000>) is on line(y = 3.000000x + -2.000000).
+Point(<2.000000,4.000000>) is on line(y = 3.000000x + -2.000000).

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef Mat
 #define Mat
 
@@ -17,9 +18,11 @@ typedef struct
 // THESE ARE THE DECLARED FUNCTIONS
 matrix MatAllocate(int rows, int columns);
 matrix MatAdd(matrix mat1, matrix mat2);
+void MatScalarMult(matrix m, float s);
 void MatRand(matrix mat, int m, int M);
 void MatPrint(matrix m);
 void MatFill(matrix m, float x);
+
 
 // FUNCTIONS
 matrix MatAllocate(int rows, int columns)
@@ -88,9 +91,20 @@ void MatPrint(matrix m)
     printf("]\n");
 }
 
+void MatScalarMult(matrix m, float s)
+{
+  for (int i = 0; i < m.rows; i++)
+    {
+        for (int j = 0; j < m.columns; j++)
+        {
+	   MatAt(m,i,j) = s*MatAt(m,i,j);
+        }
+    }
+}
+
 // TODO:
 //  -Dot Product
-//  -Matrix Multiplication with scalar
-//  -Cross Product? / Determinant ?
+//  -Cross Product?
+//  -Determinant ?
 
 #endif

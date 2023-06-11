@@ -22,5 +22,7 @@ int main()
     MatFill(m4, 10);
     MatPrint(m4);
 
+    MatScalarMult(m4,3);
+    MatPrint(m4);
     return 0;
 }
