@@ -18,11 +18,24 @@ int main()
 
     m4 = MatAdd(m, m3);
     MatPrint(m4);
-
+    
     MatFill(m4, 10);
     MatPrint(m4);
-
+    
+    //CHECKING SCALAR MULT
     MatScalarMult(m4,3);
     MatPrint(m4);
+    
+    //CHECKING TRANSPOSING
+    m4 = MatAdd(m, m3);
+    matrix m5 = MatTranspose(m4);
+    MatPrint(m5);
+    
+    //CHECKING TRACE
+    MatFill(m3,7);
+    float T3 = MatTrace(m3);
+    MatPrint(m3);
+    printf("%f", T3);
+    
     return 0;
 }

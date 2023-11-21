@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -18,10 +19,14 @@ typedef struct
 // THESE ARE THE DECLARED FUNCTIONS
 matrix MatAllocate(int rows, int columns);
 matrix MatAdd(matrix mat1, matrix mat2);
+matrix MatTranspose(matrix m);
+float MatTrace(matrix m);
 void MatScalarMult(matrix m, float s);
 void MatRand(matrix mat, int m, int M);
 void MatPrint(matrix m);
 void MatFill(matrix m, float x);
+bool isMatSymetrical(matrix m);
+
 
 
 // FUNCTIONS
@@ -97,9 +102,39 @@ void MatScalarMult(matrix m, float s)
     {
         for (int j = 0; j < m.columns; j++)
         {
-	   MatAt(m,i,j) = s*MatAt(m,i,j);
+	       MatAt(m,i,j) = s*MatAt(m,i,j);
         }
     }
+}
+
+matrix MatTranspose(matrix m)
+{
+    matrix y = MatAllocate(m.columns,m.rows);
+    for (int i = 0; i < m.rows; i++)
+    {
+        for (int j = 0; j < m.columns; j++)
+        {
+            MatAt(y,j,i) = MatAt(m,i,j);
+        }
+    }
+    return y;
+}
+
+bool isMatSymetrical(matrix m)
+{
+    return m.rows == m.columns;
+}
+
+float MatTrace(matrix m)
+{
+    float s = 0;
+    if(isMatSymetrical(m)){
+        for(int i = 0; i < m.rows; i++)
+        {
+            s += MatAt(m,i,i);
+        }
+    }
+    return s;
 }
 
 // TODO:
