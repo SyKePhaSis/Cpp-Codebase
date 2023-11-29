@@ -1,4 +1,4 @@
 *.exe
-Libraries\raylib\
-Physics\build\*
-
+Libraries/RayLib/*
+Physics/build/*
+Graphics/FarmingGame/*
