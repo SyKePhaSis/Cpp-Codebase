@@ -1,0 +1,10 @@
+./assets/furniture/furniture1.png
+./assets/furniture/furniture2.png
+./assets/furniture/furniture3.png
+./assets/furniture/furniture4.png
+./assets/furniture/furniture5.png
+./assets/furniture/furniture6.png
+./assets/furniture/furniture7.png
+./assets/furniture/furniture8.png
+./assets/furniture/furniture9.png
+./assets/furniture/furniture10.png
