@@ -12,14 +12,14 @@
 
 //STRUCTS
 
-typedef struct 
+typedef struct
 {
     int x;
     int y;
     Texture2D texture;
 } Tile;
 
-typedef struct 
+typedef struct
 {
     int height;
     int width;
@@ -29,16 +29,16 @@ typedef struct
 typedef struct
 {
     int size;
-    Image *array; 
+    Image *array;
 } TileMap;
 
-typedef struct 
+typedef struct
 {
     Vector2 pos;
     Texture2D texture;
 } Map;
 
-#endif 
+#endif
 
 
 // FUNCTION DEFINITIONS
@@ -64,10 +64,10 @@ void InitGrid(Grid *g)
     g->width = WIDTH/24;
     g->height = HEIGHT/24;
     g->tarray = malloc(g->width * g->height * sizeof(Tile*));
-    if (!g->tarray){ 
-        printf("[ERROR]Memory Allocation For Grid Failed\n"); 
-        exit(0); 
-    }   
+    if (!g->tarray){
+        printf("[ERROR]Memory Allocation For Grid Failed\n");
+        exit(0);
+    }
 }
 
 void GenerateTileMap(TileMap *tm,const char* asset_path_file)
@@ -90,7 +90,7 @@ void GenerateTileMap(TileMap *tm,const char* asset_path_file)
         printf("[INFO] Tilemap successfully created! \n");
     }
     fclose(fp);
-} 
+}
 
 void CreateTiles(const char* map_file)
 {}
@@ -102,12 +102,11 @@ Map LoadMap(const char* map_file)
     Map map;
     map.pos = pos;
     map.texture = LoadTextureFromImage(img);
-    return map;
     printf("[INFO] Map Loaded Successfully!");
+    return map;
 }
 
 void DrawMap(Map *map)
 {
     DrawTextureV(map->texture, map->pos, WHITE);
 }
-

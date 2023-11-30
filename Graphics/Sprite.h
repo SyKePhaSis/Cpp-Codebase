@@ -8,6 +8,7 @@ int sid = 0;
 
 // INCLUDES
 #include "../Libraries/RayLib/include/raylib.h"
+#include "Animation.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -16,7 +17,7 @@ typedef struct
 {
     int id;
     Vector2 pos;
-    Texture2D texture;
+    AnimationProfile ap;
 } Sprite;
 
 typedef struct
@@ -34,7 +35,7 @@ void InitSpriteList(SpriteList *sl_p);
 void freeSpriteList(SpriteList *container);
 
 ////LIST FUNCTIONS
-void insertItem(SpriteList* sl_p, Sprite sp);
+int insertItem(SpriteList* sl_p, Sprite sp);
 void updateItem(SpriteList *list, int sid);
 Sprite* getItemP(SpriteList *sl_p, int sid);
 void deleteItem(SpriteList *sl_p, int sid);
@@ -55,8 +56,10 @@ Sprite SpriteInit(Image img)
 {
    Vector2 v = (Vector2){0.0f, 0.0f};
    Sprite s;
-   s.texture = LoadTextureFromImage(img);
+   Texture t = LoadTextureFromImage(img);
    s.pos = v;
+   s.ap = initAP();
+   addTextureAP(&s.ap, t);
    return s;
 }
 
@@ -64,14 +67,14 @@ void InitSpriteList(SpriteList *sl_p)
 {
     sl_p->size = 0;
     sl_p->capacity = SP_INIT_SIZE;
-    sl_p->array = malloc(SP_INIT_SIZE * sizeof(Sprite*));
+    sl_p->array = malloc(SP_INIT_SIZE * sizeof(Sprite));
     if (!sl_p->array){
         printf("[ERROR]Memory Allocation Failed\n");
         exit(0);
     }
 }
 
-void insertItem(SpriteList* sl_p, Sprite sp)
+int insertItem(SpriteList* sl_p, Sprite sp)
 {
 
     if(sl_p->size == sl_p->capacity)
@@ -87,6 +90,7 @@ void insertItem(SpriteList* sl_p, Sprite sp)
     sp.id = sid;
     sid++;
     sl_p->array[sl_p->size++] = sp;
+    return sp.id;
 }
 
 Sprite* getItemP(SpriteList *sl_p, int sid)
@@ -132,7 +136,8 @@ void printArray(SpriteList *sl_p)
 
 void renderSprite(SpriteList *sl_p, int sid)
 {
-    DrawTextureV(sl_p->array[sid].texture, sl_p->array[sid].pos, WHITE);
+    int index = sl_p->array[sid].ap.index;
+    DrawTextureV(sl_p->array[sid].ap.tarray[index], sl_p->array[sid].pos, WHITE);
 }
 
 // IS INCLUSIVE
@@ -140,7 +145,8 @@ void renderSection(SpriteList *sl_p, int Ssid, int Esid)
 {
     for(int i = Ssid; i < Esid; i++)
     {
-        DrawTextureV(sl_p->array[i].texture, sl_p->array[i].pos, WHITE);
+        int index = sl_p->array[i].ap.index;
+        DrawTextureV(sl_p->array[i].ap.tarray[index], sl_p->array[i].pos, WHITE);
     }
 }
 
