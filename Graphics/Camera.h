@@ -11,7 +11,8 @@
 
 //FUNCTION DECLARATIONS
 Camera2D initCamera(Vector2 target, Vector2 offset);
-
+void zoomFunction2D(Camera2D *cam);
+void updateCameraStatic(Camera2D *cam, bool zoom);
 
 //FUNCTION IMPLEMENTATIONS
 Camera2D initCamera2D(Vector2 target, Vector2 offset)
@@ -44,11 +45,13 @@ void updateCameraStatic(Camera2D *cam, bool zoom)
     }
 }
 
-void updateCameraFollow(Camera2D *cam, SpriteList *sl_p, int sid)
+void updateCameraFollow(Camera2D *cam, SpriteList *sl_p, int sid, Vector2 winDimentions)
 {
     Sprite* sp = getItemP(sl_p, sid);
-    cam->target.x = sp->pos.x + 24.0f;
-    cam->target.y = sp->pos.y + 24.0f;
+    cam->target.x = sp->pos.x;
+    cam->target.y = sp->pos.y;
+    cam->offset.x = winDimentions.x;
+    cam->offset.y = winDimentions.y;
     zoomFunction2D(cam);
 }
 

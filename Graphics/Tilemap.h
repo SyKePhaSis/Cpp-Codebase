@@ -65,7 +65,7 @@ void InitGrid(Grid *g)
     g->height = HEIGHT/24;
     g->tarray = malloc(g->width * g->height * sizeof(Tile*));
     if (!g->tarray){
-        printf("[ERROR]Memory Allocation For Grid Failed\n");
+        printf("ERROR: Memory Allocation For Grid Failed\n");
         exit(0);
     }
 }
@@ -78,7 +78,7 @@ void GenerateTileMap(TileMap *tm,const char* asset_path_file)
     char path[MAX_CHARACTER_PATH];
     if(!fp)
     {
-        printf("[ERROR] Couldnt open the asset file Specified!\n");
+        printf("ERROR: Couldnt open the asset file Specified!\n");
         exit(0);
     }
     int i = 0;
@@ -87,7 +87,7 @@ void GenerateTileMap(TileMap *tm,const char* asset_path_file)
         i++;
     }
     if (feof(fp)) {
-        printf("[INFO] Tilemap successfully created! \n");
+        printf("INFO: Tilemap successfully created! \n");
     }
     fclose(fp);
 }
@@ -102,7 +102,7 @@ Map LoadMap(const char* map_file)
     Map map;
     map.pos = pos;
     map.texture = LoadTextureFromImage(img);
-    printf("[INFO] Map Loaded Successfully!");
+    printf("INFO: Map Loaded Successfully! \n");
     return map;
 }
 

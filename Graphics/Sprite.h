@@ -30,7 +30,7 @@ typedef struct
 //FUNCTION DECLARATIONS
 
 ////INITIALIZATION AND FREEING
-Sprite SpriteInit(Image img);
+Sprite SpriteInit(Image img, float idleAnimSpeed, int animSize);
 void InitSpriteList(SpriteList *sl_p);
 void freeSpriteList(SpriteList *container);
 
@@ -44,6 +44,7 @@ void printArray(SpriteList *sl_p);
 ////RENDERING FUCNTIONS
 void render(SpriteList *sl_p, int sid);
 void renderSection(SpriteList *sl_p, int Ssid, int Esid);
+void renderAnim(Sprite* sp, int index, Vector2 size, int animLength);
 
 ////MODIFYING  SPRITES
 void setVec(SpriteList *sl_p, Vector2 vec, int sid);
@@ -52,14 +53,14 @@ void setVec(SpriteList *sl_p, Vector2 vec, int sid);
 void printSpriteInfo(SpriteList *sl_p, int sid);
 
 //FUNCTION
-Sprite SpriteInit(Image img)
+Sprite SpriteInit(Image img, float idleAnimSpeed, int animSize)
 {
    Vector2 v = (Vector2){0.0f, 0.0f};
    Sprite s;
    Texture t = LoadTextureFromImage(img);
    s.pos = v;
    s.ap = initAP();
-   addTextureAP(&s.ap, t);
+   addAnimationAP(&s.ap, t, idleAnimSpeed, animSize);
    return s;
 }
 
@@ -140,6 +141,12 @@ void renderSprite(SpriteList *sl_p, int sid)
     DrawTextureV(sl_p->array[sid].ap.tarray[index], sl_p->array[sid].pos, WHITE);
 }
 
+void renderAnim(Sprite* sp, int index, Vector2 size, int animLength)
+{
+    Rectangle source = getAnimTextPos(&sp->ap, index, size);
+    DrawTextureRec(sp->ap.tarray[index], source, sp->pos, WHITE);
+}
+
 // IS INCLUSIVE
 void renderSection(SpriteList *sl_p, int Ssid, int Esid)
 {
@@ -150,7 +157,7 @@ void renderSection(SpriteList *sl_p, int Ssid, int Esid)
     }
 }
 
-void freeSpriteList(SpriteList* sl_p)
+void freeSpriteList(SpriteList *sl_p)
 {
     free(sl_p->array);
     free(sl_p);
