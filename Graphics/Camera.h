@@ -50,8 +50,8 @@ void updateCameraFollow(Camera2D *cam, SpriteList *sl_p, int sid, Vector2 winDim
     Sprite* sp = getItemP(sl_p, sid);
     cam->target.x = sp->pos.x;
     cam->target.y = sp->pos.y;
-    cam->offset.x = winDimentions.x;
-    cam->offset.y = winDimentions.y;
+    cam->offset.x = winDimentions.x/2.0f;
+    cam->offset.y = winDimentions.y/2.0f;
     zoomFunction2D(cam);
 }
 

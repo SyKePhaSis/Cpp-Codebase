@@ -1,0 +1,235 @@
+#ifndef COLISSIONS_H
+#define COLISSIONS_H
+
+//DEFINITIONS
+#define BORDER_LIST_CAPACITY 10
+#define CHARACTER_COLL_LIST_CAPACITY 10
+#define PADDING 2.0f
+
+//INCLUDES
+#include <math.h>
+#include <stdio.h>
+#include <stdbool.h>
+
+#include "./Sprite.h"
+
+//STRUCTS
+
+typedef struct
+{
+    int capacity;
+    int size;
+    Rectangle* barray;
+} BorderList;
+
+typedef struct
+{
+    int sid;
+    Vector2 size;
+} EntityCollision;
+
+typedef struct
+{
+    EntityCollision* earray;
+    int size;
+    int capacity;
+} EntityCollisionList;
+
+typedef struct
+{
+    EntityCollisionList ecl;
+    BorderList bl;
+} CollisionMaster;
+
+//FUNCTION DECLARATIONS
+
+//CollisionMaster
+CollisionMaster initCollision();
+
+//BorderList
+void addBorder(CollisionMaster* cm, Rectangle r);
+void loadBordersFromFile(CollisionMaster* cm, const char* border_file);
+
+//EnityCollision
+void addEntityCollision(CollisionMaster *cm, int sid, Vector2 size);
+
+//CheckCollisionFunctions
+void checkCollision(CollisionMaster* cm, SpriteList* sl_p);
+
+//DrawCollisionRectangles
+void drawBorders(CollisionMaster* cm);
+void drawAllCollisionObjects(CollisionMaster* cm, SpriteList* sl_p);
+
+//Helper
+bool rectInScopeY(Rectangle object, Rectangle Entity, float padding);
+bool rectInScopeX(Rectangle object, Rectangle Entity, float padding);
+
+//FUNCTIONS
+
+//CollisionMaster
+CollisionMaster initCollision()
+{
+    //Init Collision
+    CollisionMaster cm;
+    BorderList bl;
+    EntityCollisionList ecl;
+
+    //Init BorderList
+    bl.capacity = BORDER_LIST_CAPACITY;
+    bl.size = 0;
+    bl.barray = malloc(bl.capacity * sizeof(Rectangle));
+
+    //Init EnityCollisionList
+    ecl.capacity = CHARACTER_COLL_LIST_CAPACITY;
+    ecl.size = 0;
+    ecl.earray = malloc(ecl.capacity * sizeof(EntityCollision));
+
+    cm.ecl = ecl;
+    cm.bl = bl;
+    return cm;
+}
+
+//CollisionCHecks
+void checkCollision(CollisionMaster* cm, SpriteList* sl_p)
+{
+    for(int i = 0; i < cm->ecl.size; i++)
+    {
+        Sprite *csp = getItemP(sl_p, cm->ecl.earray[i].sid);
+        for(int j = 0; j < cm->bl.size; j++)
+        {
+            Vector2 c1  = (Vector2){csp->pos.x + cm->ecl.earray[i].size.x/2, csp->pos.y + cm->ecl.earray[i].size.y/2};
+            Vector2 c2  = (Vector2){cm->bl.barray[j].x + cm->bl.barray[j].width/2, cm->bl.barray[j].y + cm->bl.barray[j].height/2};
+            float dx = c1.x - c2.x;
+            float dy = c1.y - c2.y;
+            Rectangle entityRect = (Rectangle)
+            {
+                csp->pos.x,
+                csp->pos.y,
+                cm->ecl.earray[i].size.x,
+                cm->ecl.earray[i].size.y
+            };
+            if(CheckCollisionRecs(cm->bl.barray[j], entityRect))
+            {
+                if(rectInScopeY(cm->bl.barray[j], entityRect, PADDING))
+                {
+                    if(dx > 0){
+                       //COLLISION FROM RIGHT OF THE STATIC OBJECT
+                       csp->pos.x = cm->bl.barray[j].x + cm->bl.barray[j].width;
+                    }
+                    if(dx < 0){
+                       //COLLISION FROM LEFT OF THE STATIC OBJECT
+                       csp->pos.x = cm->bl.barray[j].x - cm->ecl.earray[i].size.x;
+                    }
+                }
+                else if(rectInScopeX(cm->bl.barray[j], entityRect, PADDING))
+                {
+                    if(dy > 0){
+                        //COLLISION FROM DOWN OF THE STATIC OBJECT
+                        csp->pos.y = cm->bl.barray[j].y + cm->bl.barray[j].height;
+                    }
+                    if(dy < 0){
+                        //COLLISION FROM UP OF THE STATIC OBJECT
+                        csp->pos.y = cm->bl.barray[j].y - cm->ecl.earray[i].size.y;
+                    }
+                }
+            } else {
+                continue;
+            }
+        }
+    }
+}
+
+
+//Border Functions
+void drawBorders(CollisionMaster* cm)
+{
+    for(int i = 0; i < cm->bl.size; i++)
+    {
+        DrawRectangleLinesEx(cm->bl.barray[i], 1.0f, RAYWHITE);
+    }
+}
+
+void addBorder(CollisionMaster* cm, Rectangle r)
+{
+    if(cm->bl.size == cm->bl.capacity)
+    {
+        printf("ERROR: Couldn't add Border because List was Full\n");
+    } else {
+        cm->bl.barray[cm->bl.size++] = r;
+        printf("INFO: Successfully Added Border\n");
+    }
+}
+
+void loadBordersFromFile(CollisionMaster* cm, const char* border_file)
+{
+    FILE *fp = fopen(border_file, "r");
+    if(!fp)
+    {
+        printf("ERROR: Couldn't open Border Asset File\n");
+    } else {
+        Rectangle r;
+        Vector2 v;
+        while(fscanf(fp,"%f%f%f%f", &r.x, &r.y, &v.x, &v.y) == 4)
+        {
+            r.width = abs(r.x - v.x);
+            r.height = abs(r.y - v.y);
+            addBorder(cm,r);
+        }
+        fclose(fp);
+        printf("INFO: Added Borders from [%s]\n", border_file);
+    }
+}
+
+//EntityFunctions
+void addEntityCollision(CollisionMaster *cm, int sid, Vector2 size)
+{
+    EntityCollision ec;
+    if(cm->ecl.size == cm->ecl.capacity)
+    {
+        printf("ERROR: Couldn't add EntityCollisionObject because EnityCollisionList was full\n");
+    } else {
+        ec.sid = sid;
+        ec.size = size;
+        cm->ecl.earray[cm->ecl.size++] = ec;
+        printf("INFO: Successfully added EntityCollisionObject to EnityCollisionList\n");
+    }
+}
+
+//DrawAllCollisionShapes
+void drawAllCollisionObjects(CollisionMaster* cm, SpriteList* sl_p)
+{
+    drawBorders(cm);
+    for (int i = 0; i < cm->ecl.size; i++)
+    {
+        Sprite *csp = getItemP(sl_p, cm->ecl.earray[i].sid);
+        Rectangle r = (Rectangle){
+            csp->pos.x,
+            csp->pos.y,
+            cm->ecl.earray[i].size.x,
+            cm->ecl.earray[i].size.y
+        };
+        DrawRectangleLinesEx(r, 1.0f, RAYWHITE);
+    }
+}
+
+//Helper
+bool rectInScopeY(Rectangle object, Rectangle Entity, float padding)
+{
+    if(Entity.y + Entity.height > object.y + padding && Entity.y  < object.y + object.height - padding)
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool rectInScopeX(Rectangle object, Rectangle Entity, float padding)
+{
+    if(Entity.x + Entity.width - padding > object.x + padding && Entity.x < object.x + object.width - padding)
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
+#endif

@@ -44,8 +44,8 @@ typedef struct
 // FUNCTION DEFINITIONS
 
 ////GENERATE MAP
-void DrawMap(Map *map);
-Map LoadMap(const char* map_file);
+void defrawMap(Map *map);
+Map loadMap(const char* map_file);
 
 ////GRID
 void InitGrid(Grid *g);
@@ -95,7 +95,7 @@ void GenerateTileMap(TileMap *tm,const char* asset_path_file)
 void CreateTiles(const char* map_file)
 {}
 
-Map LoadMap(const char* map_file)
+Map loadMap(const char* map_file)
 {
     Image img = LoadImage(map_file);
     Vector2 pos = {0.0f,0.0f};
@@ -106,7 +106,7 @@ Map LoadMap(const char* map_file)
     return map;
 }
 
-void DrawMap(Map *map)
+void drawMap(Map *map)
 {
     DrawTextureV(map->texture, map->pos, WHITE);
 }

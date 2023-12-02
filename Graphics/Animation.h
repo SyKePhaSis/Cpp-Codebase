@@ -1,7 +1,7 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#define TEXTURE_ARRAY_SIZE 4
+#define TEXTURE_ARRAY_SIZE 8
 
 //INCLUDES
 #include <stdio.h>
