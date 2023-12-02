@@ -20,16 +20,28 @@ typedef struct
     Texture2D tarray[TEXTURE_ARRAY_SIZE];
 } AnimationProfile;
 
-//FUNCTION DECLARATIONS
+typedef struct
+{
+    int animIndex;
+    float animSpeed;
+    int animLen;
+    int animfCounter;
+    Texture2D sprite;
+} ObjectAnimation;
+
+
 AnimationProfile initAP();
+ObjectAnimation initOA();
+
+
 void addAnimationAP(AnimationProfile* ap, Texture2D t, float animSpeed, int animLen);
 void loadAnimationsFromAssetFile(AnimationProfile* ap, const char* asset_file_path);
 
-// ANIMATIONS
-Rectangle getAnimTextPos(AnimationProfile* ap, int index, Vector2 size);
+void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, Texture2D t);
 
-//FUNCTION IMPLEMENTATIONS
+Rectangle getAnimTextPos(AnimationProfile* ap);
 
+//animationProfile
 AnimationProfile initAP()
 {
     AnimationProfile ap;
@@ -82,10 +94,10 @@ void loadAnimationsFromAssetFile(AnimationProfile* ap, const char* asset_file_pa
 }
 
 
-Rectangle getAnimTextPos(AnimationProfile* ap, int index, Vector2 size)
+Rectangle getAnimTextPos(AnimationProfile* ap)
 {
     Rectangle rect;
-    if(ap->index == index && ap->animfCounter >= (60/ap->animSpeed[ap->index]))
+    if(ap->animfCounter >= (60/ap->animSpeed[ap->index]))
     {
         ap->animfCounter = 0;
         if(ap->animIndex < ap->animLen[ap->index])
@@ -98,20 +110,32 @@ Rectangle getAnimTextPos(AnimationProfile* ap, int index, Vector2 size)
         }
     } else {
         ap->animfCounter++;
-        ap->index = index;
     }
     rect = (Rectangle){
-        ap->animIndex * size.x, // Vector2 x top left corner of sprite
+        ap->animIndex, // Vector2 x top left corner of sprite
         0.0f,                 // Vector2 y top left corner of sprite
-        1.0f * size.x,          // Vector2 x size (width)
-        1.0f * size.y,          // Vector2 y size (height)
+        1.0f,          // Vector2 x size (width)
+        1.0f,          // Vector2 y size (height)
     };
-    // printf("Counter = %d\n", ap->animfCounter);
-    // printf("ap->index = %d\n", ap->index);
-    // printf("ap->animIndex = %d\n", ap->animIndex);
-    // printf("ap->animLen[ap->index] = %d\n", ap->animLen[ap->index]);
-    // printf("ap->animSpeed[ap->index] = %d\n", ap->animSpeed[ap->index]);
     return rect;
+}
+
+//Object Animation
+ObjectAnimation initOA(){
+    ObjectAnimation oa;
+    oa.animIndex = 0;
+    oa.animSpeed = 1.0f;
+    oa.animLen = 1;
+    oa.animfCounter = 0;
+    return oa;
+}
+
+void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, Texture2D t)
+{
+    oa->sprite = t;
+    oa->animSpeed = animSpeed;
+    oa->animLen = animLen;
+    printf("INFO: Added Object Animation\n");
 }
 
 #endif

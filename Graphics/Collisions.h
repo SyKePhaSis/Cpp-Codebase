@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "./Sprite.h"
+#include "Entity.h"
 
 //STRUCTS
 
@@ -54,11 +54,11 @@ void loadBordersFromFile(CollisionMaster* cm, const char* border_file);
 void addEntityCollision(CollisionMaster *cm, int sid, Vector2 size);
 
 //CheckCollisionFunctions
-void checkCollision(CollisionMaster* cm, SpriteList* sl_p);
+void checkCollision(CollisionMaster* cm, EntityArray* ea_p);
 
 //DrawCollisionRectangles
 void drawBorders(CollisionMaster* cm);
-void drawAllCollisionObjects(CollisionMaster* cm, SpriteList* sl_p);
+void drawAllCollisionObjects(CollisionMaster* cm, EntityArray* ea_p);
 
 //Helper
 bool rectInScopeY(Rectangle object, Rectangle Entity, float padding);
@@ -90,21 +90,21 @@ CollisionMaster initCollision()
 }
 
 //CollisionCHecks
-void checkCollision(CollisionMaster* cm, SpriteList* sl_p)
+void checkCollision(CollisionMaster* cm, EntityArray* ea_p)
 {
     for(int i = 0; i < cm->ecl.size; i++)
     {
-        Sprite *csp = getItemP(sl_p, cm->ecl.earray[i].sid);
+        Entity *ep = getEntityP(ea_p, cm->ecl.earray[i].sid);
         for(int j = 0; j < cm->bl.size; j++)
         {
-            Vector2 c1  = (Vector2){csp->pos.x + cm->ecl.earray[i].size.x/2, csp->pos.y + cm->ecl.earray[i].size.y/2};
+            Vector2 c1  = (Vector2){ep->pos.x + cm->ecl.earray[i].size.x/2, ep->pos.y + cm->ecl.earray[i].size.y/2};
             Vector2 c2  = (Vector2){cm->bl.barray[j].x + cm->bl.barray[j].width/2, cm->bl.barray[j].y + cm->bl.barray[j].height/2};
             float dx = c1.x - c2.x;
             float dy = c1.y - c2.y;
             Rectangle entityRect = (Rectangle)
             {
-                csp->pos.x,
-                csp->pos.y,
+                ep->pos.x,
+                ep->pos.y,
                 cm->ecl.earray[i].size.x,
                 cm->ecl.earray[i].size.y
             };
@@ -114,22 +114,22 @@ void checkCollision(CollisionMaster* cm, SpriteList* sl_p)
                 {
                     if(dx > 0){
                        //COLLISION FROM RIGHT OF THE STATIC OBJECT
-                       csp->pos.x = cm->bl.barray[j].x + cm->bl.barray[j].width;
+                       ep->pos.x = cm->bl.barray[j].x + cm->bl.barray[j].width;
                     }
                     if(dx < 0){
                        //COLLISION FROM LEFT OF THE STATIC OBJECT
-                       csp->pos.x = cm->bl.barray[j].x - cm->ecl.earray[i].size.x;
+                       ep->pos.x = cm->bl.barray[j].x - cm->ecl.earray[i].size.x;
                     }
                 }
                 else if(rectInScopeX(cm->bl.barray[j], entityRect, PADDING))
                 {
                     if(dy > 0){
                         //COLLISION FROM DOWN OF THE STATIC OBJECT
-                        csp->pos.y = cm->bl.barray[j].y + cm->bl.barray[j].height;
+                        ep->pos.y = cm->bl.barray[j].y + cm->bl.barray[j].height;
                     }
                     if(dy < 0){
                         //COLLISION FROM UP OF THE STATIC OBJECT
-                        csp->pos.y = cm->bl.barray[j].y - cm->ecl.earray[i].size.y;
+                        ep->pos.y = cm->bl.barray[j].y - cm->ecl.earray[i].size.y;
                     }
                 }
             } else {
@@ -196,15 +196,15 @@ void addEntityCollision(CollisionMaster *cm, int sid, Vector2 size)
 }
 
 //DrawAllCollisionShapes
-void drawAllCollisionObjects(CollisionMaster* cm, SpriteList* sl_p)
+void drawAllCollisionObjects(CollisionMaster* cm, EntityArray* ea_p)
 {
     drawBorders(cm);
     for (int i = 0; i < cm->ecl.size; i++)
     {
-        Sprite *csp = getItemP(sl_p, cm->ecl.earray[i].sid);
+        Entity *ep = getEntityP(ea_p, cm->ecl.earray[i].sid);
         Rectangle r = (Rectangle){
-            csp->pos.x,
-            csp->pos.y,
+            ep->pos.x,
+            ep->pos.y,
             cm->ecl.earray[i].size.x,
             cm->ecl.earray[i].size.y
         };

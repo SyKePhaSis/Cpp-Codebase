@@ -45,9 +45,9 @@ void updateCameraStatic(Camera2D *cam, bool zoom)
     }
 }
 
-void updateCameraFollow(Camera2D *cam, SpriteList *sl_p, int sid, Vector2 winDimentions)
+void updateCameraFollow(Camera2D *cam, ObjectSpriteList *sl_p, int sid, Vector2 winDimentions)
 {
-    Sprite* sp = getItemP(sl_p, sid);
+    ObjectSprite* sp = getObjectSpriteP(sl_p, sid);
     cam->target.x = sp->pos.x;
     cam->target.y = sp->pos.y;
     cam->offset.x = winDimentions.x/2.0f;
