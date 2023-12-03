@@ -1,14 +1,13 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
-#define SP_INIT_SIZE 4
-
 //VARIABLES
 int sid = 0;
 
 // INCLUDES
 #include "../Libraries/RayLib/include/raylib.h"
 #include "Animation.h"
+#include "Definitions.h"
 #include <stdlib.h>
 #include <stdio.h>
 

@@ -1,17 +1,11 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#define WIDTH 960
-#define HEIGHT 600
-#define CAPACITY 20
-#define MAX_CHARACTER_PATH 20
-#define TILE_WIDTH 24
-#define TILE_HEIGHT 24
-
 //INCLUDES
 #include <stdio.h>
 #include <math.h>
 #include "../Libraries/RayLib/include/raylib.h"
+#include "Definitions.h"
 
 //STRUCTS
 
@@ -52,6 +46,7 @@ Map loadMap(const char* map_file);
 
 // - GRID FUNCTIONS
 Grid initGrid(Rectangle grid_area);
+Grid loadGridFromFile(const char* asset_file);
 void drawGrid(Grid *g);
 void freeGrid(Grid* g);
 
@@ -77,6 +72,27 @@ Grid initGrid(Rectangle grid_area)
         initTiles(&g);
     }
     return g;
+}
+
+Grid loadGridFromFile(const char* asset_file)
+{
+    FILE *fp = fopen(asset_file, "r");
+    if(!fp)
+    {
+        printf("ERROR: Couldn't open the grid asset file [%s]\n", asset_file);
+    } else {
+        printf("INFO: Opened the grid asset file [%s]\n", asset_file);
+        Vector2 posS;
+        Vector2 posE;
+        if(fscanf(fp,"%f%f%f%f", &posS.x, &posS.y, &posE.x, &posE.y) == 4)
+        {
+            Rectangle r = (Rectangle){posS.x, posS.y, posE.x - posS.x, posE.y - posS.y};
+            Grid g = initGrid(r);
+            fclose(fp);
+            return g;
+        }
+    }
+    exit(0);
 }
 
 void drawGrid(Grid *g)

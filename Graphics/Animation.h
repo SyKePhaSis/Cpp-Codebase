@@ -1,12 +1,11 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#define TEXTURE_ARRAY_SIZE 8
-
 //INCLUDES
 #include <stdio.h>
 #include <stdlib.h>
 #include "../Libraries/RayLib/include/raylib.h"
+#include "Definitions.h"
 
 //STRUCTS
 typedef struct

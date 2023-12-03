@@ -1,17 +1,13 @@
 #ifndef COLISSIONS_H
 #define COLISSIONS_H
 
-//DEFINITIONS
-#define BORDER_LIST_CAPACITY 10
-#define CHARACTER_COLL_LIST_CAPACITY 10
-#define PADDING 2.0f
-
 //INCLUDES
 #include <math.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 #include "Entity.h"
+#include "Definitions.h"
 
 //STRUCTS
 
