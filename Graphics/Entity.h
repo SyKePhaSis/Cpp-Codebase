@@ -113,7 +113,7 @@ void setEntityIndex(EntityArray* ea, int eid, int index)
 
 void renderEntity(Entity* e)
 {
-    Rectangle source = getAnimTextPos(&e->ap);
+    Rectangle source = getAnimTextPosAP(&e->ap);
     source.width = source.width * e->size.x;
     source.height = source.height * e->size.y;
     source.x = source.x * e->size.x;

@@ -21,6 +21,7 @@ typedef struct
 
 typedef struct
 {
+    int size;
     int animIndex;
     float animSpeed;
     int animLen;
@@ -38,7 +39,8 @@ void loadAnimationsFromAssetFile(AnimationProfile* ap, const char* asset_file_pa
 
 void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, Texture2D t);
 
-Rectangle getAnimTextPos(AnimationProfile* ap);
+Rectangle getAnimTextPosAP(AnimationProfile* ap);
+Rectangle getAnimTextPosOA(ObjectAnimation* oa);
 
 //animationProfile
 AnimationProfile initAP()
@@ -92,11 +94,36 @@ void loadAnimationsFromAssetFile(AnimationProfile* ap, const char* asset_file_pa
     }
 }
 
-
-Rectangle getAnimTextPos(AnimationProfile* ap)
+Rectangle getAnimTextPosOA(ObjectAnimation* oa)
 {
     Rectangle rect;
-    if(ap->animfCounter >= (60/ap->animSpeed[ap->index]))
+    if(oa->animfCounter >= (FRAME_RATE/oa->animSpeed))
+    {
+        oa->animfCounter = 0;
+        if(oa->animIndex < oa->animLen)
+        {
+            oa->animIndex++;
+        }
+        else
+        {
+            oa->animIndex = 0;
+        }
+    } else {
+        oa->animfCounter++;
+    }
+    rect = (Rectangle){
+        oa->animIndex,
+        0.0f,
+        1.0f,
+        1.0f
+    };
+    return rect;
+}
+
+Rectangle getAnimTextPosAP(AnimationProfile* ap)
+{
+    Rectangle rect;
+    if(ap->animfCounter >= (FRAME_RATE/ap->animSpeed[ap->index]))
     {
         ap->animfCounter = 0;
         if(ap->animIndex < ap->animLen[ap->index])
