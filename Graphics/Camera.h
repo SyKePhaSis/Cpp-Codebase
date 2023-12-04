@@ -3,16 +3,16 @@
 
 //INCLUDES
 #include "../Libraries/RayLib/include/raylib.h"
+#include "Entity.h"
+
 #include <stdio.h>
 #include <stdbool.h>
-
-//STRUCTURES
-
 
 //FUNCTION DECLARATIONS
 Camera2D initCamera(Vector2 target, Vector2 offset);
 void zoomFunction2D(Camera2D *cam);
 void updateCameraStatic(Camera2D *cam, bool zoom);
+void updateCameraFollow(Camera2D *cam, EntityArray *ea, int eid, Vector2 winDimentions);
 
 //FUNCTION IMPLEMENTATIONS
 Camera2D initCamera2D(Vector2 target, Vector2 offset)
@@ -45,9 +45,9 @@ void updateCameraStatic(Camera2D *cam, bool zoom)
     }
 }
 
-void updateCameraFollow(Camera2D *cam, ObjectSpriteList *sl_p, int sid, Vector2 winDimentions)
+void updateCameraFollow(Camera2D *cam, EntityArray *ea, int eid, Vector2 winDimentions)
 {
-    ObjectSprite* sp = getObjectSpriteP(sl_p, sid);
+    Entity* sp = getEntityP(ea, eid);
     cam->target.x = sp->pos.x;
     cam->target.y = sp->pos.y;
     cam->offset.x = winDimentions.x/2.0f;

@@ -1,7 +1,7 @@
 // ############################
 // Writen by: SykePhaSis
 // Subject: HashTable
-// Initial Date: 4/10/23
+// Initial Date: 10/4/23
 // ############################
 
 #include<iostream>
@@ -10,7 +10,7 @@
 class HashTable{
   std::list<int> *table;
   int storageLength;
-  
+
   public:
     HashTable(int length);
     void InsertItem(int key);
@@ -36,7 +36,7 @@ void HashTable::InsertItem(int key){
 
 void HashTable::DeleteItem(int key){
   int index = HashMechanism(key);
-  
+
   std::list<int>::iterator i;
   for(i = table[index].begin(); i != table[index].end(); i++){
     if(*i == key){
@@ -65,7 +65,7 @@ void HashTable::DisplayHashTable(void){
 
 // int main (int argc, char *argv[])
 // {
-//   int arr[] = {20, 34, 56, 54, 76, 87}; 
+//   int arr[] = {20, 34, 56, 54, 76, 87};
 //   int n = sizeof(arr)/sizeof(arr[0]);
 //   HashTable Table(n);
 //   for(int i = 0; i < n; i++){

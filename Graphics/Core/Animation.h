@@ -4,7 +4,7 @@
 //INCLUDES
 #include <stdio.h>
 #include <stdlib.h>
-#include "../Libraries/RayLib/include/raylib.h"
+#include "../../Libraries/RayLib/include/raylib.h"
 #include "Definitions.h"
 
 //STRUCTS

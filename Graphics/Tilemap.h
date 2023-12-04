@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <math.h>
 #include "../Libraries/RayLib/include/raylib.h"
-#include "Definitions.h"
-#include "Animation.h"
+#include "Core/Definitions.h"
+#include "Core/Animation.h"
 
 //STRUCTS
 
@@ -129,7 +129,7 @@ Grid loadGridFromFile(const char* asset_file)
     exit(0);
 }
 
-void updateGrid(Grid *g)
+void drawSelectedTile(Grid *g)
 {
     Vector2 mousePos = GetMousePosition();
     for(int i = 0; i < g->dimensions.x; i++)

@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #define WIDTH 960
 #define HEIGHT 600
 #define CAPACITY 20
@@ -9,3 +11,5 @@
 #define CHARACTER_COLL_LIST_CAPACITY 10
 #define PADDING 2.0f
 #define TEXTURE_ARRAY_SIZE 8
+#define TEXTURE_LIST_CAPACITY 16
+#define DEBUG false

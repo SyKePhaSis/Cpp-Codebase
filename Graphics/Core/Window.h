@@ -2,8 +2,9 @@
 #define WINDOW_H
 
 //INCLUDES
-#include "../Libraries/RayLib/include/raylib.h"
-#include "stdbool.h"
+#include "../../Libraries/RayLib/include/raylib.h"
+#include <stdbool.h>
+#include "Definitions.h"
 
 //STRUCTS
 typedef struct
@@ -22,19 +23,19 @@ typedef struct
 } Window;
 
 //FUNCTION DEFINITIONS
-void InitWin(Window *win, int frameRate);
+void InitWin(Window *win);
 void updateWin(Window *win);
 void addCustomCursor(Window *win, const char* asset_text_file, Vector2 size);
 
 //FUNCTIONS
-void InitWin(Window *win, int frameRate)
+void InitWin(Window *win)
 {
     InitWindow(win->width, win->height, win->title);
     win->customCurs = 0;
-    SetTargetFPS(frameRate);
+    SetTargetFPS(FRAME_RATE);
 }
 
-void updateWin(Window *win)
+void drawCursor(Window *win)
 {
     if(win->customCurs)
     {

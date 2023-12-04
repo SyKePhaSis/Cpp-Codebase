@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include "Core/Definitions.h"
 #include "Entity.h"
-#include "Definitions.h"
 
 //STRUCTS
 

@@ -2,7 +2,7 @@
 #define ENTITY_H
 
 #include <stdio.h>
-#include "Animation.h"
+#include "Core/Animation.h"
 
 #define ENTITY_ARRAY_CAP 4
 

@@ -6,8 +6,8 @@ int sid = 0;
 
 // INCLUDES
 #include "../Libraries/RayLib/include/raylib.h"
-#include "Animation.h"
-#include "Definitions.h"
+#include "Core/Animation.h"
+#include "Core/Definitions.h"
 #include <stdlib.h>
 #include <stdio.h>
 
