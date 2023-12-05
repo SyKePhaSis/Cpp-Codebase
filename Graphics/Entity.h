@@ -11,7 +11,7 @@ typedef struct {
     int id;
     Vector2 pos;
     Vector2 size;
-    Texture2D t;
+    int tid; // TextureId
     AnimationProfile ap;
 } Entity;
 
@@ -24,9 +24,9 @@ typedef struct {
 
 //Function Declarations
 EntityArray initEntityArray();
-int genEntity(EntityArray* ea, const char* name, Texture2D t, Vector2 pos, Vector2 size);
+int genEntity(EntityArray* ea, const char* name, int tid, Vector2 pos, Vector2 size);
 Entity* getEntityP(EntityArray* ea, int eid);
-void updateEntityTexture(EntityArray* ea, int eid, Texture2D t);
+void updateEntityTexture(EntityArray* ea, int eid, TextureList* tl ,Texture2D t);
 void deleteEntity(EntityArray* ea, int eid);
 void setEntityPos(EntityArray* ea, int eid, Vector2 pos);
 
@@ -36,16 +36,16 @@ EntityArray initEntityArray()
     ea.size = 0;
     ea.capacity = ENTITY_ARRAY_CAP;
     ea.cint = 0;
-    ea.earray = malloc(ea.capacity   * sizeof(Entity));
+    ea.earray = malloc(ea.capacity  * sizeof(Entity));
     return ea;
 }
 
-int genEntity(EntityArray* ea, const char* name, Texture2D t, Vector2 pos, Vector2 size)
+int genEntity(EntityArray* ea, const char* name, int tid, Vector2 pos, Vector2 size)
 {
     AnimationProfile ap = initAP();
     Entity e;
 
-    e.t = t;
+    e.tid = tid;
     e.ap = ap;
     e.pos = pos;
     e.name = name;
@@ -80,10 +80,10 @@ Entity* getEntityP(EntityArray* ea, int eid)
     return NULL;
 }
 
-void updateEntityTexture(EntityArray* ea, int eid, Texture2D t)
+void updateEntityTexture(EntityArray* ea, int eid, TextureList* tl ,Texture2D t)
 {
     Entity* e = getEntityP(ea, eid);
-    e->t = t;
+    setTextureFromIdTL(tl, e->tid,t);
 }
 
 void deleteEntity(EntityArray* ea, int eid)
@@ -111,13 +111,14 @@ void setEntityIndex(EntityArray* ea, int eid, int index)
     }
 }
 
-void renderEntity(Entity* e)
+void renderEntity(Entity* e, TextureList* tl)
 {
     Rectangle source = getAnimTextPosAP(&e->ap);
     source.width = source.width * e->size.x;
     source.height = source.height * e->size.y;
     source.x = source.x * e->size.x;
-    DrawTextureRec(e->ap.tarray[e->ap.index], source, (Vector2){e->pos.x, e->pos.y}, WHITE);
+    Texture2D t = getTextureFromIdTL(tl,e->ap.tarray[e->ap.index]);
+    DrawTextureRec(t, source, (Vector2){e->pos.x, e->pos.y}, WHITE);
 }
 
 #endif

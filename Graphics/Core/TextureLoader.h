@@ -1,13 +1,13 @@
 #ifndef TEXTURE_LOADER_H
 #define TEXTURE_LOADER_H
 
-//EXPERIMENTAL NOT IN USE
 
 #include "../../Libraries/RayLib/include/raylib.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "Definitions.h"
 
@@ -15,7 +15,7 @@ typedef struct
 {
     int id;
     Texture2D text;
-    const char* path;
+    char path[64];
 } TextureItem;
 
 typedef struct
@@ -34,8 +34,8 @@ typedef struct
 } TextureList;
 
 TextureList initTextureList(void);
-Texture* loadTextureTL(TextureList *tl, const char* path);
-Texture* getTextureFromPathTL(TextureList *tl, const char* path);
+int loadTextureTL(TextureList *tl, const char* path);
+int getIdFromPathTL(TextureList *tl, const char* path);
 void addSlotSL(TextureList *tl, int index);
 int getIndexSL(TextureList *tl,int index);
 void removeSlotSL(TextureList *tl, int index);
@@ -56,15 +56,18 @@ TextureList initTextureList(void)
     sl.size = 0;
     sl.capacity = TEXTURE_LIST_CAPACITY;
     sl.slots = malloc(sl.capacity * sizeof(int));
-
+    for(int i =0; i < sl.size; i++)
+    {
+        sl.slots[i] = -1;
+    }
     tl.sl = sl;
     return tl;
 }
 
-Texture* loadTextureTL(TextureList *tl, const char* path)
+int LoadTextureTL(TextureList *tl, const char* path)
 {
-    Texture2D* t = getTextureFromPathTL(tl,path);
-    if(!t){
+    int id = getIdFromPathTL(tl,path);
+    if(id == -1){
         int index = -1;
         for(int i = 0; i < tl->sl.size; i++)
         {
@@ -84,31 +87,54 @@ Texture* loadTextureTL(TextureList *tl, const char* path)
             if(!tl->array)
             {
                 printf("ERROR: Couldn't expand texture array\n");
-                return NULL;
+                return -1;
             }
         }
         TextureItem ti;
         ti.id = index;
-        ti.path = path;
+        strcpy(ti.path,path);
         ti.text = LoadTexture(path);
         tl->array[tl->size] = ti;
         tl->size++;
         printf("INFO: Loaded Texture [%s] to [TextureArray]\n",path);
-        return &tl->array[tl->size].text;
+        return ti.id;
     }
-    return t;
+    return id;
 }
 
-Texture* getTextureFromPathTL(TextureList *tl, const char* path)
+int getIdFromPathTL(TextureList *tl, const char* path)
 {
-    for(int i = 0; i < tl->sl.size; i++)
+    for(int i = 0; i < tl->size; i++)
     {
         if(tl->array[i].path == path)
         {
-            return &tl->array[i].text;
+            return tl->array[i].id;
         }
     }
-    return NULL;
+    return -1;
+}
+
+Texture2D getTextureFromIdTL(TextureList* tl, int id)
+{
+    for(int i = 0; i < tl->size; i++)
+    {
+        if(tl->array[i].id == id)
+        {
+            return tl->array[i].text;
+        }
+    }
+    exit(0);
+}
+
+void setTextureFromIdTL(TextureList* tl, int id, Texture t)
+{
+    for(int i = 0; i < tl->size; i++)
+    {
+        if(tl->array[i].id == id)
+        {
+            tl->array[i].text = t;
+        }
+    }
 }
 
 void addSlotSL(TextureList *tl, int index)

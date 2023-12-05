@@ -112,6 +112,7 @@ Grid loadGridFromFile(const char* asset_file)
         {
             Rectangle r = (Rectangle){posS.x, posS.y, posE.x - posS.x, posE.y - posS.y};
             Grid g = initGrid(r);
+            Vector2 dim = (Vector2){g.dimensions.x, g.dimensions.y};
             if(tl)
             {
                 char asset_file[32];
@@ -123,6 +124,8 @@ Grid loadGridFromFile(const char* asset_file)
                 }
             }
             fclose(fp);
+            g.dimensions.x = dim.x;
+            g.dimensions.y = dim.y;
             return g;
         }
     }

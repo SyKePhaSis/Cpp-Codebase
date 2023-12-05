@@ -25,6 +25,9 @@ GlobalHandler initGlobalHandler(Window win)
 {
     GlobalHandler gh;
 
+    // Initialize  Texture List
+    gh.tl = initTextureList();
+
     // Initialize Window
     gh.win = win;
     InitWin(&gh.win);
@@ -35,7 +38,7 @@ GlobalHandler initGlobalHandler(Window win)
     loadBordersFromFile(&gh.cm, BORDER_PATH_FILE);
 
     // Initializing Entities
-    gh.ea = loadEntitiesFromFile(&gh.cm, ENTITY_FILE_LIST);
+    gh.ea = loadEntitiesFromFile(&gh.cm, &gh.tl,ENTITY_FILE_LIST);
 
     //Initializing Map
     gh.map = loadMap(MAP_PATH);
@@ -75,7 +78,7 @@ void drawFrame(GlobalHandler* gh)
     BeginMode2D(gh->cam);
         drawMap(&gh->map);
         drawSelectedTile(&gh->g);
-        renderEntities(&gh->ea);
+        renderEntities(&gh->tl,&gh->ea);
         drawCursor(&gh->win);
         if(DEBUG)
         {
@@ -84,6 +87,13 @@ void drawFrame(GlobalHandler* gh)
         }
     EndMode2D();
     DrawFPS(10,10);
+}
+
+void freeALL(GlobalHandler* gh)
+{
+    freeTextureList(&gh->tl);
+    freeGrid(&gh->g);
+    freeObjectSpriteList(&gh->osl);
 }
 
 #endif

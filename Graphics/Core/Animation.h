@@ -16,7 +16,7 @@ typedef struct
     float animSpeed[TEXTURE_ARRAY_SIZE];
     int animLen[TEXTURE_ARRAY_SIZE];
     int animfCounter;
-    Texture2D tarray[TEXTURE_ARRAY_SIZE];
+    int tarray[TEXTURE_ARRAY_SIZE];
 } AnimationProfile;
 
 typedef struct
@@ -34,8 +34,8 @@ AnimationProfile initAP();
 ObjectAnimation initOA();
 
 
-void addAnimationAP(AnimationProfile* ap, Texture2D t, float animSpeed, int animLen);
-void loadAnimationsFromAssetFile(AnimationProfile* ap, const char* asset_file_path);
+void addAnimationAP(AnimationProfile* ap, int tid, float animSpeed, int animLen);
+void loadAnimationsFromAssetFile(AnimationProfile* ap, TextureList* tl, int tid,const char* asset_file_path);
 
 void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, Texture2D t);
 
@@ -53,11 +53,11 @@ AnimationProfile initAP()
     return ap;
 }
 
-void addAnimationAP(AnimationProfile* ap, Texture2D t, float animSpeed, int animLen)
+void addAnimationAP(AnimationProfile* ap, int tid, float animSpeed, int animLen)
 {
     if(ap->size < TEXTURE_ARRAY_SIZE)
     {
-        ap->tarray[ap->size] = t;
+        ap->tarray[ap->size] = tid;
         ap->animSpeed[ap->size] = animSpeed;
         ap->animLen[ap->size] = animLen;
         ap->size++;
@@ -70,7 +70,7 @@ void addAnimationAP(AnimationProfile* ap, Texture2D t, float animSpeed, int anim
     }
 }
 
-void loadAnimationsFromAssetFile(AnimationProfile* ap, const char* asset_file_path)
+void loadAnimationsFromAssetFile(AnimationProfile* ap, TextureList* tl, int tid, const char* asset_file_path)
 {
     FILE* fp = fopen(asset_file_path,"r");
     if(!fp)
@@ -80,15 +80,15 @@ void loadAnimationsFromAssetFile(AnimationProfile* ap, const char* asset_file_pa
     else
     {
         printf("INFO: Successfully opened asset file [%s]\n", asset_file_path);
-        char path[100];
+        char path[64];
         float animSpeed;
         int animLen;
-        Texture2D t;
+        int tid;
         while(fscanf(fp,"%s%f%d", path, &animSpeed, &animLen) == 3)
         {
-            t = LoadTexture(path);
-            addAnimationAP(ap,t,animSpeed,animLen);
-            printf("INFO: Loaded Animation from '%s'\n", path);
+            tid = LoadTextureTL(tl,path);
+            addAnimationAP(ap,tid,animSpeed,animLen);
+            printf("INFO: Loaded Animation from '%s' with TextureId [%d]\n", path, tid);
         }
         fclose(fp);
     }

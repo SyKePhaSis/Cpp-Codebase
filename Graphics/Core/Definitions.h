@@ -12,4 +12,4 @@
 #define PADDING 2.0f
 #define TEXTURE_ARRAY_SIZE 8
 #define TEXTURE_LIST_CAPACITY 16
-#define DEBUG false
+#define DEBUG true

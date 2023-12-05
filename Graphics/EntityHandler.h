@@ -7,14 +7,14 @@
 
 #include <stdio.h>
 
-int createEntity(CollisionMaster *cm, EntityArray* ea, const char* name, Texture2D t, Vector2 pos, Vector2 size)
+int createEntity(CollisionMaster *cm, EntityArray* ea, const char* name, int tid, Vector2 pos, Vector2 size)
 {
-    int eid = genEntity(ea, name, t, pos, size);
+    int eid = genEntity(ea, name, tid, pos, size);
     addEntityCollision(cm, eid, size);
     return eid;
 }
 
-EntityArray loadEntitiesFromFile(CollisionMaster *cm, const char* entities_path_list)
+EntityArray loadEntitiesFromFile(CollisionMaster *cm, TextureList* tl,const char* entities_path_list)
 {
     EntityArray ea = initEntityArray();
     FILE *fp = fopen(entities_path_list, "r");
@@ -37,10 +37,10 @@ EntityArray loadEntitiesFromFile(CollisionMaster *cm, const char* entities_path_
             } else {
                 if(fscanf(fp1, "%s%s%f%f", texture_path, assets_file_path, &pos.x, &pos.y) == 4)
                 {
-                    Texture2D t = LoadTexture(texture_path);
-                    int eid = createEntity(cm, &ea, name, t, pos, size);
+                    int tid = LoadTextureTL(tl, texture_path);
+                    int eid = createEntity(cm, &ea, name, tid, pos, size);
                     Entity* e = getEntityP(&ea, eid);
-                    loadAnimationsFromAssetFile(&e->ap, assets_file_path);
+                    loadAnimationsFromAssetFile(&e->ap, tl, tid, assets_file_path);
                 } else {
                     printf("ERROR: Couldn't read contents of file [%s]\n", init_file_path);
                 }
@@ -50,11 +50,11 @@ EntityArray loadEntitiesFromFile(CollisionMaster *cm, const char* entities_path_
     return ea;
 }
 
-void renderEntities(EntityArray* ea)
+void renderEntities(TextureList* tl, EntityArray* ea)
 {
     for(int i = 0; i < ea->size; i++)
     {
-        renderEntity(&ea->earray[i]);
+        renderEntity(&ea->earray[i], tl);
     }
 }
 
