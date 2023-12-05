@@ -2,8 +2,7 @@
 #define CAMERA_H
 
 //INCLUDES
-#include "../Libraries/RayLib/include/raylib.h"
-#include "Entity.h"
+#include "../../Libraries/RayLib/include/raylib.h"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -12,7 +11,7 @@
 Camera2D initCamera(Vector2 target, Vector2 offset);
 void zoomFunction2D(Camera2D *cam);
 void updateCameraStatic(Camera2D *cam, bool zoom);
-void updateCameraFollow(Camera2D *cam, EntityArray *ea, int eid, Vector2 winDimentions);
+void updateCameraFollow(Camera2D *cam, Vector2* pos,Vector2 winDimentions);
 
 //FUNCTION IMPLEMENTATIONS
 Camera2D initCamera2D(Vector2 target, Vector2 offset)
@@ -45,11 +44,10 @@ void updateCameraStatic(Camera2D *cam, bool zoom)
     }
 }
 
-void updateCameraFollow(Camera2D *cam, EntityArray *ea, int eid, Vector2 winDimentions)
+void updateCameraFollow(Camera2D *cam, Vector2 *pos,Vector2 winDimentions)
 {
-    Entity* sp = getEntityP(ea, eid);
-    cam->target.x = sp->pos.x;
-    cam->target.y = sp->pos.y;
+    cam->target.x = pos->x;
+    cam->target.y = pos->y;
     cam->offset.x = winDimentions.x/2.0f;
     cam->offset.y = winDimentions.y/2.0f;
     zoomFunction2D(cam);

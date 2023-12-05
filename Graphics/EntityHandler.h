@@ -7,6 +7,12 @@
 
 #include <stdio.h>
 
+int createEntity(CollisionMaster *cm, EntityArray* ea, const char* name, int tid, Vector2 pos, Vector2 size);
+EntityArray loadEntitiesFromFile(CollisionMaster *cm, TextureList* tl, const char* entities_path_list);
+void renderEntities(TextureList* tl, EntityArray* ea);
+void clearSelected(EntityArray* ea);
+void updateEntities(EntityArray* ea);
+
 int createEntity(CollisionMaster *cm, EntityArray* ea, const char* name, int tid, Vector2 pos, Vector2 size)
 {
     int eid = genEntity(ea, name, tid, pos, size);
@@ -14,7 +20,7 @@ int createEntity(CollisionMaster *cm, EntityArray* ea, const char* name, int tid
     return eid;
 }
 
-EntityArray loadEntitiesFromFile(CollisionMaster *cm, TextureList* tl,const char* entities_path_list)
+EntityArray loadEntitiesFromFile(CollisionMaster *cm, TextureList* tl, const char* entities_path_list)
 {
     EntityArray ea = initEntityArray();
     FILE *fp = fopen(entities_path_list, "r");
@@ -23,6 +29,20 @@ EntityArray loadEntitiesFromFile(CollisionMaster *cm, TextureList* tl,const char
         printf("ERROR: Couldnt open entity list file [%s]\n", entities_path_list);
     } else {
         printf("INFO: Opened Entities List File [%s]\n", entities_path_list);
+
+        int selector;
+        char selector_png[64];
+        Vector2 selector_size;
+        float animSpeed;
+        int animLen;
+
+        if(fscanf(fp, "%d%s%f%f%f%d", &selector, selector_png, &selector_size.x, &selector_size.y, &animSpeed, &animLen) == 6 && selector == 1)
+        {
+            printf("INFO: Creating Entity Selector from [%s]\n", selector_png);
+            ea.es = initEntitySelector(selector_size, selector_png, animLen, animSpeed);
+        }
+
+
         char name[32];
         char init_file_path[100];
         Vector2 size;
@@ -54,7 +74,30 @@ void renderEntities(TextureList* tl, EntityArray* ea)
 {
     for(int i = 0; i < ea->size; i++)
     {
-        renderEntity(&ea->earray[i], tl);
+        renderEntity(&ea->earray[i], &ea->es ,tl);
+    }
+}
+
+void clearSelected(EntityArray* ea)
+{
+    for(int i = 0; i < ea->size; i++)
+    {
+        ea->earray[i].selected = false;
+    }
+}
+
+void updateEntities(EntityArray* ea)
+{
+    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        clearSelected(ea);
+        for(int i = 0; i < ea->size; i++)
+        {
+            if(checkEntityMouseClick(&ea->earray[i]))
+            {
+                ea->earray[i].selected = true;
+            }
+        }
     }
 }
 

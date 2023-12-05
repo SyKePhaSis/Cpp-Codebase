@@ -106,7 +106,7 @@ int getIdFromPathTL(TextureList *tl, const char* path)
 {
     for(int i = 0; i < tl->size; i++)
     {
-        if(tl->array[i].path == path)
+        if(strcmp(tl->array[i].path, path) == 0)
         {
             return tl->array[i].id;
         }

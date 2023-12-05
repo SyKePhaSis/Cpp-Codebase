@@ -53,6 +53,16 @@ AnimationProfile initAP()
     return ap;
 }
 
+//Object Animation
+ObjectAnimation initOA(){
+    ObjectAnimation oa;
+    oa.animIndex = 0;
+    oa.animSpeed = 1.0f;
+    oa.animLen = 1;
+    oa.animfCounter = 0;
+    return oa;
+}
+
 void addAnimationAP(AnimationProfile* ap, int tid, float animSpeed, int animLen)
 {
     if(ap->size < TEXTURE_ARRAY_SIZE)
@@ -146,15 +156,7 @@ Rectangle getAnimTextPosAP(AnimationProfile* ap)
     return rect;
 }
 
-//Object Animation
-ObjectAnimation initOA(){
-    ObjectAnimation oa;
-    oa.animIndex = 0;
-    oa.animSpeed = 1.0f;
-    oa.animLen = 1;
-    oa.animfCounter = 0;
-    return oa;
-}
+
 
 void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, Texture2D t)
 {

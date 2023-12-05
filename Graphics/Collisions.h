@@ -48,6 +48,7 @@ void loadBordersFromFile(CollisionMaster* cm, const char* border_file);
 
 //EnityCollision
 void addEntityCollision(CollisionMaster *cm, int sid, Vector2 size);
+bool checkEntityMouseClick(Entity* e);
 
 //CheckCollisionFunctions
 void checkCollision(CollisionMaster* cm, EntityArray* ea_p);
@@ -59,6 +60,7 @@ void drawAllCollisionObjects(CollisionMaster* cm, EntityArray* ea_p);
 //Helper
 bool rectInScopeY(Rectangle object, Rectangle Entity, float padding);
 bool rectInScopeX(Rectangle object, Rectangle Entity, float padding);
+EntityCollision* GetEntityCollisionP(CollisionMaster *cm, int eid);
 
 //FUNCTIONS
 
@@ -133,6 +135,22 @@ void checkCollision(CollisionMaster* cm, EntityArray* ea_p)
             }
         }
     }
+}
+
+bool checkEntityMouseClick(Entity* e)
+{
+    Vector2 mpos = GetMousePosition();
+    Rectangle rect = (Rectangle){
+        e->pos.x,
+        e->pos.y,
+        e->size.x,
+        e->size.y
+    };
+    if(CheckCollisionPointRec(mpos, rect))
+    {
+        return true;
+    }
+    return false;
 }
 
 
@@ -228,4 +246,17 @@ bool rectInScopeX(Rectangle object, Rectangle Entity, float padding)
         return false;
     }
 }
+
+EntityCollision* GetEntityCollisionP(CollisionMaster *cm, int eid)
+{
+    for(int i = 0; i < cm->ecl.size; i++)
+    {
+        if(cm->ecl.earray[i].sid == eid)
+        {
+            return &cm->ecl.earray[i];
+        }
+    }
+    return NULL;
+}
+
 #endif

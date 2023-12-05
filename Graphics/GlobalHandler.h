@@ -4,7 +4,7 @@
 #include "Core/Definitions.h"
 #include "Core/Window.h"
 #include "Core/TextureLoader.h"
-#include "Camera.h"
+#include "Core/Camera.h"
 #include "Collisions.h"
 #include "EntityHandler.h"
 #include "Sprite.h"
@@ -69,7 +69,8 @@ void updateFrame(GlobalHandler* gh)
 {
     checkCollision(&gh->cm, &gh->ea);
     updateCameraStatic(&gh->cam, false);
-    // updateCameraFollow(&camera, sl_p, sid, (Vector2){WIDTH, HEIGHT});
+    updateEntities(&gh->ea);
+    // updateCameraFollow(&gh->cam, &gh->ea.earray[0].pos, (Vector2){WIDTH, HEIGHT});
 }
 
 void drawFrame(GlobalHandler* gh)
