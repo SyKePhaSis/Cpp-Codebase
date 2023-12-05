@@ -34,8 +34,9 @@ typedef struct
 } TextureList;
 
 TextureList initTextureList(void);
-int loadTextureTL(TextureList *tl, const char* path);
+int LoadTextureTL(TextureList *tl, const char* path);
 int getIdFromPathTL(TextureList *tl, const char* path);
+Texture2D getTextureFromIdTL(TextureList* tl, int id);
 void addSlotSL(TextureList *tl, int index);
 int getIndexSL(TextureList *tl,int index);
 void removeSlotSL(TextureList *tl, int index);

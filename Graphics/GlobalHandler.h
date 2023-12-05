@@ -44,7 +44,7 @@ GlobalHandler initGlobalHandler(Window win)
     gh.map = loadMap(MAP_PATH);
 
     //Loading Grid
-    gh.g = loadGridFromFile(GRID_FILE_PATH);
+    gh.g = loadGridFromFile(GRID_FILE_PATH, &gh.tl);
 
     //Initializing SpriteManager
     InitObjectSpriteList(&gh.osl);
@@ -78,7 +78,7 @@ void drawFrame(GlobalHandler* gh)
     ClearBackground(GRAY);
     BeginMode2D(gh->cam);
         drawMap(&gh->map);
-        drawSelectedTile(&gh->g);
+        drawSelectedTile(&gh->g, &gh->tl);
         renderEntities(&gh->tl,&gh->ea);
         drawCursor(&gh->win);
         if(DEBUG)

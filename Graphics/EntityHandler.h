@@ -1,6 +1,7 @@
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
 
+#include "Core/TextureLoader.h"
 #include "Sprite.h"
 #include "Entity.h"
 #include "Collisions.h"
@@ -39,7 +40,7 @@ EntityArray loadEntitiesFromFile(CollisionMaster *cm, TextureList* tl, const cha
         if(fscanf(fp, "%d%s%f%f%f%d", &selector, selector_png, &selector_size.x, &selector_size.y, &animSpeed, &animLen) == 6 && selector == 1)
         {
             printf("INFO: Creating Entity Selector from [%s]\n", selector_png);
-            ea.es = initEntitySelector(selector_size, selector_png, animLen, animSpeed);
+            ea.es = initEntitySelector(selector_size, tl, selector_png, animLen, animSpeed);
         }
 
 

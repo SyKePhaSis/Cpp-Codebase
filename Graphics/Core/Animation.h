@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../Libraries/RayLib/include/raylib.h"
+#include "TextureLoader.h"
 #include "Definitions.h"
 
 //STRUCTS
@@ -26,7 +27,7 @@ typedef struct
     float animSpeed;
     int animLen;
     int animfCounter;
-    Texture2D sprite;
+    int spriteId;
 } ObjectAnimation;
 
 
@@ -37,7 +38,7 @@ ObjectAnimation initOA();
 void addAnimationAP(AnimationProfile* ap, int tid, float animSpeed, int animLen);
 void loadAnimationsFromAssetFile(AnimationProfile* ap, TextureList* tl, int tid,const char* asset_file_path);
 
-void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, Texture2D t);
+void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, int spriteId);
 
 Rectangle getAnimTextPosAP(AnimationProfile* ap);
 Rectangle getAnimTextPosOA(ObjectAnimation* oa);
@@ -158,9 +159,9 @@ Rectangle getAnimTextPosAP(AnimationProfile* ap)
 
 
 
-void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, Texture2D t)
+void addAnimationOA(ObjectAnimation* oa, float animSpeed, int animLen, int spriteId)
 {
-    oa->sprite = t;
+    oa->spriteId = spriteId;
     oa->animSpeed = animSpeed;
     oa->animLen = animLen;
     printf("INFO: Added Object Animation\n");

@@ -7,6 +7,7 @@
 #include "../Libraries/RayLib/include/raylib.h"
 #include "Core/Definitions.h"
 #include "Core/Animation.h"
+#include "Core/TextureLoader.h"
 
 //STRUCTS
 
@@ -55,15 +56,16 @@ Map loadMap(const char* map_file);
 
 // - GRID FUNCTIONS
 Grid initGrid(Rectangle grid_area);
-Grid loadGridFromFile(const char* asset_file);
+Grid loadGridFromFile(const char* asset_file, TextureList *tl);
 void updateGrid(Grid *g);
 void drawGrid(Grid *g);
 void freeGrid(Grid* g);
 
 // - TILE FUNCTIONS
 void initTiles(Grid* g);
-void initTileSelector(Grid* g, const char* file_path, int animLen, float animSpeed);
+void initTileSelector(Grid* g, TextureList *tl,const char* file_path, int animLen, float animSpeed);
 Tile* GetTile(Grid *g, GridDimensions pos);
+void drawSelectedTile(Grid *g, TextureList *tl);
 void LoadTextureToTile(Grid *g, GridDimensions pos, Texture2D text);
 
 // FUNCTIONS
@@ -86,18 +88,18 @@ Grid initGrid(Rectangle grid_area)
     return g;
 }
 
-void initTileSelector(Grid* g, const char* file_path, int animLen, float animSpeed)
+void initTileSelector(Grid* g, TextureList *tl,const char* file_path, int animLen, float animSpeed)
 {
     g->tl_active = 1;
-    TileSelector tl;
-    tl.size = (Vector2){TILE_WIDTH, TILE_HEIGHT};
-    tl.oa.sprite = LoadTexture(file_path);
-    tl.oa.animSpeed = animSpeed;
-    tl.oa.animLen = animLen;
-    g->tl = tl;
+    TileSelector ts;
+    ts.size = (Vector2){TILE_WIDTH, TILE_HEIGHT};
+    ts.oa.spriteId = LoadTextureTL(tl, file_path);
+    ts.oa.animSpeed = animSpeed;
+    ts.oa.animLen = animLen;
+    g->tl = ts;
 }
 
-Grid loadGridFromFile(const char* asset_file)
+Grid loadGridFromFile(const char* asset_file, TextureList *tl)
 {
     FILE *fp = fopen(asset_file, "r");
     if(!fp)
@@ -107,8 +109,8 @@ Grid loadGridFromFile(const char* asset_file)
         printf("INFO: Opened the grid asset file [%s]\n", asset_file);
         Vector2 posS;
         Vector2 posE;
-        int tl;
-        if(fscanf(fp,"%f%f%f%f%d", &posS.x, &posS.y, &posE.x, &posE.y, &tl) == 5)
+        int ts;
+        if(fscanf(fp,"%f%f%f%f%d", &posS.x, &posS.y, &posE.x, &posE.y, &ts) == 5)
         {
             Rectangle r = (Rectangle){posS.x, posS.y, posE.x - posS.x, posE.y - posS.y};
             Grid g = initGrid(r);
@@ -120,7 +122,7 @@ Grid loadGridFromFile(const char* asset_file)
                 float animSpeed;
                 if(fscanf(fp,"%s%d%f", asset_file, &animLen, &animSpeed) == 3)
                 {
-                    initTileSelector(&g, asset_file, animLen, animSpeed);
+                    initTileSelector(&g, tl, asset_file, animLen, animSpeed);
                 }
             }
             fclose(fp);
@@ -132,7 +134,7 @@ Grid loadGridFromFile(const char* asset_file)
     exit(0);
 }
 
-void drawSelectedTile(Grid *g)
+void drawSelectedTile(Grid *g, TextureList *tl)
 {
     Vector2 mousePos = GetMousePosition();
     for(int i = 0; i < g->dimensions.x; i++)
@@ -149,7 +151,8 @@ void drawSelectedTile(Grid *g)
                     g->tarray[i * g->dimensions.y + j].r.x,
                     g->tarray[i * g->dimensions.y + j].r.y
                 };
-                DrawTextureRec(g->tl.oa.sprite, s, tilePos, WHITE);
+                Texture2D t =  getTextureFromIdTL(tl, g->tl.oa.spriteId);
+                DrawTextureRec(t, s, tilePos, WHITE);
             }
         }
     }

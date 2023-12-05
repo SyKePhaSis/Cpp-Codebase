@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "Core/Animation.h"
+#include "Core/TextureLoader.h"
 
 #define ENTITY_ARRAY_CAP 4
 
@@ -36,7 +37,7 @@ typedef struct {
 
 //Function Declarations
 EntityArray initEntityArray();
-EntitySelector initEntitySelector(Vector2 size, const char* path, int animLen, float animSpeed);
+EntitySelector initEntitySelector(Vector2 size, TextureList* tl,const char* path, int animLen, float animSpeed);
 int genEntity(EntityArray* ea, const char* name, int tid, Vector2 pos, Vector2 size);
 Entity* getEntityP(EntityArray* ea, int eid);
 void updateEntityTexture(EntityArray* ea, int eid, TextureList* tl ,Texture2D t);
@@ -53,12 +54,12 @@ EntityArray initEntityArray()
     return ea;
 }
 
-EntitySelector initEntitySelector(Vector2 size, const char* path, int animLen, float animSpeed)
+EntitySelector initEntitySelector(Vector2 size, TextureList* tl,const char* path, int animLen, float animSpeed)
 {
     EntitySelector es;
-    Texture2D t = LoadTexture(path);
+    int id = LoadTextureTL(tl, path);
     es.size = size;
-    addAnimationOA(&es.oa, animSpeed, animLen, t);
+    addAnimationOA(&es.oa, animSpeed, animLen, id);
     return es;
 }
 
@@ -151,7 +152,8 @@ void renderEntity(Entity* e, EntitySelector *ea, TextureList* tl)
         Vector2 sp; //Startinng point
         sp.x = e->pos.x - (ea->size.x - e->size.x)/2;
         sp.y = e->pos.y - (ea->size.y - e->size.y)/2;
-        DrawTextureRec(ea->oa.sprite, select_source, sp, WHITE);
+        Texture2D t = getTextureFromIdTL(tl, ea->oa.spriteId);
+        DrawTextureRec(t, select_source, sp, WHITE);
     }
 }
 

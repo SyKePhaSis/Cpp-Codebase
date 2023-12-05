@@ -8,6 +8,7 @@ int sid = 0;
 #include "../Libraries/RayLib/include/raylib.h"
 #include "Core/Animation.h"
 #include "Core/Definitions.h"
+#include "Core/TextureLoader.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -44,8 +45,9 @@ void printArray(ObjectSpriteList *sl_p);
 
 ////RENDERING FUCNTIONS
 void render(ObjectSpriteList *sl_p, int sid);
-void renderSection(ObjectSpriteList *sl_p, int Ssid, int Esid);
+void renderSection(ObjectSpriteList *sl_p, TextureList* tl, int Ssid, int Esid);
 void renderAnim(ObjectSprite* sp, int index, Vector2 size, int animLength);
+void renderObjectSprite(ObjectSpriteList *sl_p, TextureList* tl,int sid);
 
 ////MODIFYING  SPRITES
 void setVec(ObjectSpriteList *sl_p, Vector2 vec, int sid);
@@ -136,27 +138,29 @@ void printArray(ObjectSpriteList *sl_p)
     printf("%llu\n", sl_p->capacity);
 }
 
-void renderObjectSprite(ObjectSpriteList *sl_p, int sid)
+void renderObjectSprite(ObjectSpriteList *sl_p, TextureList* tl,int sid)
 {
     if(sl_p->array[sid].animated == true)
     {
         // GET ANIMATION RECTANGLE
         // int index = sl_p->array[sid].anim.index;
-        DrawTextureV(sl_p->array[sid].anim.sprite, sl_p->array[sid].pos, WHITE);
+        Texture2D t = getTextureFromIdTL(tl, sl_p->array[sid].anim.spriteId);
+        DrawTextureV(t, sl_p->array[sid].pos, WHITE);
     } else {
         DrawTextureV(sl_p->array[sid].t, sl_p->array[sid].pos, WHITE);
     }
 }
 
 // IS INCLUSIVE
-void renderSection(ObjectSpriteList *sl_p, int Ssid, int Esid)
+void renderSection(ObjectSpriteList *sl_p, TextureList* tl, int Ssid, int Esid)
 {
     for(int i = Ssid; i < Esid; i++)
     {
         if(sl_p->array[i].animated == true)
         {
             // GET ANIMATION RECTANGLE
-            DrawTextureV(sl_p->array[i].anim.sprite, sl_p->array[i].pos, WHITE);
+            Texture2D t = getTextureFromIdTL(tl, sl_p->array[sid].anim.spriteId);
+            DrawTextureV(t, sl_p->array[i].pos, WHITE);
         } else {
             DrawTextureV(sl_p->array[i].t, sl_p->array[i].pos, WHITE);
         }
