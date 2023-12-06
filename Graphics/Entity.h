@@ -1,4 +1,4 @@
-#pragnma once
+#pragma once
 #ifndef ENTITY_H
 #define ENTITY_H
 
@@ -44,6 +44,7 @@ Entity* getEntityP(EntityArray* ea, int eid);
 void updateEntityTexture(EntityArray* ea, int eid, TextureList* tl ,Texture2D t);
 void deleteEntity(EntityArray* ea, int eid);
 void setEntityPos(EntityArray* ea, int eid, Vector2 pos);
+Entity* getSelectedEntityP(EntityArray* ea);
 
 EntityArray initEntityArray()
 {
@@ -134,6 +135,18 @@ void setEntityIndex(EntityArray* ea, int eid, int index)
         e->ap.animfCounter = 0;
         e->ap.animIndex = 0;
     }
+}
+
+Entity* getSelectedEntityP(EntityArray* ea)
+{
+    for(int i = 0; i < ea->size; i++)
+    {
+        if(ea->earray[i].selected)
+        {
+            return &ea->earray[i];
+        }
+    }
+    return NULL;
 }
 
 void renderEntity(Entity* e, EntitySelector *ea, TextureList* tl)

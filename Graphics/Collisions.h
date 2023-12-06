@@ -1,4 +1,4 @@
-#pragnma once
+#pragma once
 #ifndef COLISSIONS_H
 #define COLISSIONS_H
 
@@ -224,7 +224,7 @@ void drawAllCollisionObjects(CollisionMaster* cm, EntityArray* ea_p)
             cm->ecl.earray[i].size.x,
             cm->ecl.earray[i].size.y
         };
-        DrawRectangleLinesEx(r, 1.0f, RAYWHITE);
+        DrawRectangleLinesEx(r, 1.0f, WHITE);
     }
 }
 

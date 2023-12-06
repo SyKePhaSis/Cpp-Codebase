@@ -1,4 +1,4 @@
-#pragnma once
+#pragma once
 #ifndef SPRITES_H
 #define SPRITES_H
 

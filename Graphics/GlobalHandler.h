@@ -1,4 +1,4 @@
-#pragnma once
+#pragma once
 #ifndef GLOBAL_HANDLER_H
 #define GLOBAL_HANDLER_H
 
