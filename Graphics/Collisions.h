@@ -1,3 +1,4 @@
+#pragnma once
 #ifndef COLISSIONS_H
 #define COLISSIONS_H
 
@@ -61,6 +62,7 @@ void drawAllCollisionObjects(CollisionMaster* cm, EntityArray* ea_p);
 bool rectInScopeY(Rectangle object, Rectangle Entity, float padding);
 bool rectInScopeX(Rectangle object, Rectangle Entity, float padding);
 EntityCollision* GetEntityCollisionP(CollisionMaster *cm, int eid);
+float getMouseDistFromCenterRec(Vector2 pos, Vector2 size);
 
 //FUNCTIONS
 
@@ -258,5 +260,18 @@ EntityCollision* GetEntityCollisionP(CollisionMaster *cm, int eid)
     }
     return NULL;
 }
+
+float getMouseDistFromCenterRec(Vector2 pos, Vector2 size)
+{
+    Vector2 center;
+    Vector2 MPos = GetMousePosition();
+    center.x = pos.x + size.x/2;
+    center.y = pos.y + size.y/2;
+    float dx = center.x - MPos.x;
+    float dy = center.y - MPos.y;
+    float dist = pow(dy,2) + pow(dx,2);
+    return sqrt(dist);
+}
+
 
 #endif

@@ -1,3 +1,4 @@
+#pragnma once
 #ifndef GLOBAL_HANDLER_H
 #define GLOBAL_HANDLER_H
 
@@ -70,7 +71,7 @@ void updateFrame(GlobalHandler* gh)
     checkCollision(&gh->cm, &gh->ea);
     updateCameraStatic(&gh->cam, false);
     updateEntities(&gh->ea);
-    // updateCameraFollow(&gh->cam, &gh->ea.earray[0].pos, (Vector2){WIDTH, HEIGHT});
+    // updateCameraFollow(&gh->cam, &gh->ea.earray[0].pos, (Vector2){WIDTH/2, HEIGHT});
 }
 
 void drawFrame(GlobalHandler* gh)

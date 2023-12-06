@@ -1,3 +1,4 @@
+#pragnma once
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
@@ -75,8 +76,8 @@ Grid initGrid(Rectangle grid_area)
     Grid g;
     g.tl_active = 0;
     g.offset = (Vector2){grid_area.x, grid_area.y};
-    g.dimensions.y = grid_area.width/TILE_WIDTH;
-    g.dimensions.x = grid_area.height/TILE_HEIGHT;
+    g.dimensions.y = ceil(grid_area.width/TILE_WIDTH);
+    g.dimensions.x = ceil(grid_area.height/TILE_HEIGHT);
     g.tarray = malloc(g.dimensions.x * g.dimensions.y * sizeof(Tile));
     printf("INFO: Allocating [%d] bytes for TileMap\n", (int)(g.dimensions.x * g.dimensions.y * sizeof(Tile)));
     if (!g.tarray){

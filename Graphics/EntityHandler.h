@@ -1,3 +1,4 @@
+#pragnma once
 #ifndef ENTITY_MANAGER_H
 #define ENTITY_MANAGER_H
 
@@ -91,13 +92,24 @@ void updateEntities(EntityArray* ea)
 {
     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
     {
+        int index = 0;
+        float dist_max = getMouseDistFromCenterRec(ea->earray[0].pos, ea->earray[0].size);
         clearSelected(ea);
         for(int i = 0; i < ea->size; i++)
         {
             if(checkEntityMouseClick(&ea->earray[i]))
             {
-                ea->earray[i].selected = true;
+                float dist = getMouseDistFromCenterRec(ea->earray[i].pos, ea->earray[i].size);
+                if(dist < dist_max)
+                {
+                    index = i;
+                    dist_max = dist;
+                }
             }
+        }
+        if(checkEntityMouseClick(&ea->earray[index]))
+        {
+            ea->earray[index].selected = true;
         }
     }
 }
