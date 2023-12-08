@@ -32,7 +32,7 @@ UIHolder createUIHolder(const char* name)
     strcpy(uih.name, name);
     uih.size = 0;
     uih.capacity = MAX_UI_OBJECTS;
-    uih.uiarray = malloc(uih.capacity * sizeof(UIComponent));
+    uih.uiarray = (UIComponent*)malloc(uih.capacity * sizeof(UIComponent));
     if(uih.uiarray)
     {
         printf("INFO: UIHolder succesfully created and alocated [%lld] bytes\n", uih.capacity * sizeof(UIComponent));

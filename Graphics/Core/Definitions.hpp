@@ -1,12 +1,13 @@
 #pragma once
-#include <stdbool.h>
 
-#define WIDTH 1920
-#define HEIGHT 1080
+// #define WIDTH 1920
+// #define HEIGHT 1080
 #define FRAME_RATE 60
 
 #define CAPACITY 20
 #define MAX_CHARACTER_PATH 20
+
+#define ENTITY_ARRAY_CAP 4
 
 #define TILE_WIDTH 32
 #define TILE_HEIGHT 32

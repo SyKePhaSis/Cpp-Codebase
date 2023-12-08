@@ -22,9 +22,11 @@ typedef struct {
     Map map;
 } GlobalHandler;
 
-GlobalHandler initGlobalHandler(Window win)
+GlobalHandler initGlobalHandler()
 {
     GlobalHandler gh;
+
+    gh.win = Window(WIDTH,HEIGHT,WINDOW_NAME);
 
     // Initialize  Texture List
     gh.tl = initTextureList();

@@ -77,12 +77,12 @@ CollisionMaster initCollision()
     //Init BorderList
     bl.capacity = BORDER_LIST_CAPACITY;
     bl.size = 0;
-    bl.barray = malloc(bl.capacity * sizeof(Rectangle));
+    bl.barray = (Rectangle* )malloc(bl.capacity * sizeof(Rectangle));
 
     //Init EnityCollisionList
     ecl.capacity = CHARACTER_COLL_LIST_CAPACITY;
     ecl.size = 0;
-    ecl.earray = malloc(ecl.capacity * sizeof(EntityCollision));
+    ecl.earray = (EntityCollision*)malloc(ecl.capacity * sizeof(EntityCollision));
 
     cm.ecl = ecl;
     cm.bl = bl;
