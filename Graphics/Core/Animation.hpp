@@ -46,6 +46,16 @@ namespace Animations {
                 }
             }
 
+            void changeIndex(int newIndex)
+            {
+                if(index != newIndex)
+                {
+                    index = newIndex;
+                    animfCounter = 0;
+                    animIndex = 0;            
+                }
+            }
+
             void loadFromAssetFile(TextureList* tl, const char* asset_file_path)
             {
                 std::ifstream fdata(asset_file_path);

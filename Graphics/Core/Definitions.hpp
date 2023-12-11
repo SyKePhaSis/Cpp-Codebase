@@ -1,7 +1,5 @@
 #pragma once
 
-// #define WIDTH 1920
-// #define HEIGHT 1080
 #define FRAME_RATE 60
 
 #define CAPACITY 20
@@ -15,7 +13,7 @@
 #define SP_INIT_SIZE 4
 
 #define BORDER_LIST_CAPACITY 10
-#define CHARACTER_COLL_LIST_CAPACITY 10
+#define ENTITY_COLL_LIST_CAPACITY 10
 #define PADDING 5.0f
 
 #define MAX_UI_OBJECTS 30

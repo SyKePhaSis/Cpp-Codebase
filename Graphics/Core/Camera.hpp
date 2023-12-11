@@ -11,6 +11,15 @@
 class CameraAdv {
 
     public:
+
+        CameraAdv(void){
+            cam = { 0 };
+            cam.target = (Vector2){0.0f, 0.0f};
+            cam.offset = (Vector2){0.0f, 0.0f};
+            cam.zoom = 1.0f;
+            cam.rotation = 0.0f;
+        }
+
         CameraAdv(Vector2 target, Vector2 offset){
             cam = { 0 };
             cam.target = target;
@@ -29,7 +38,17 @@ class CameraAdv {
             zoom = !zoom;
         }
 
-        void updateCameraFollow(Vector2 *pos, Vector2 winDimentions)
+        void SetTarget(Vector2 target)
+        {
+            cam.target = target;
+        }
+
+        void SetOffset(Vector2 offset)
+        {
+            cam.offset = offset;
+        }
+
+        void UpdateCameraFollow(Vector2 *pos, Vector2 winDimentions)
         {
             if(!follow)
             {
@@ -42,7 +61,7 @@ class CameraAdv {
             cam.offset.y = winDimentions.y/2.0f;
         }
 
-        void updateCameraStatic()
+        void UpdateCameraStatic()
         {
             if(zoom)
             {

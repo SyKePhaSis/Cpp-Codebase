@@ -7,45 +7,51 @@
 #include <cstdbool>
 #include "Core/Animation.hpp"
 #include "Core/TextureLoader.hpp"
+#include "Core/Collisions.hpp"
 
 class Entity {
     public:
         std::string name;
         int id;
-        Vector2 pos;
+        Vector2 pos = (Vector2){0.0f, 0.0f};
         Vector2 size;
+        bool direction;
         int tid;
-        Animations::CharacterAnimation ca;
         bool isSelected;
         TextureList *tl;
+        Animations::CharacterAnimation ca;
+        Collisions::EntityCollision ec;
+        Collisions::List::Borders* clb;
 
-        Entity(std::string n, int eid, Vector2 eSize)
+        //Constructors
+
+        Entity(void){}
+
+        Entity(std::string n, int eid, Vector2 eSize, Collisions::List::Borders *clbp)
         {
             name = n;
             id = eid;
             size = eSize;
-            ca = Animations::CharacterAnimation();
             tid = -1;
+            ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
+            clb = clbp;
         }
 
-        Entity(std::string n, int eid, Vector2 eSize, TextureList *tlp, const char* path)
+        Entity(std::string n, int eid, Vector2 eSize, TextureList *tlp, const char* path, Collisions::List::Borders* clbp)
         {
             name = n;
             id = eid;
             size = eSize;
             AttachTextureList(tlp);
             AttachTexture(path);
+            ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
+            clb = clbp;
         }
 
-        void SetPos(Vector2 Vpos)
-        {
-            pos = Vpos;
-        }
+        virtual void UpdateMovement(void){}
+        virtual void SetAnimation(void){}
 
-        void SetSize(Vector2 Vsize)
-        {
-            size = Vsize;
-        }
+        //Textures
 
         void AttachTextureList(TextureList *tlp)
         {
@@ -57,18 +63,47 @@ class Entity {
             tid = tl->LoadTextureToList(path);
         }
 
+        //Animations
+
         void LoadAnimationsFromFile(const char* path)
         {
             ca.loadFromAssetFile(tl,path);
         }
 
+        //Collisions
+
+        void UpdateCollision(void)
+        {
+            ec.rect = (Rectangle){pos.x, pos.y, ec.rect.width, ec.rect.height};
+        }
+
+        void DrawCollision(void)
+        {
+            ec.DrawBorder();
+        }
+
+        void CheckCollision()
+        {
+            for(int j = 0; j < (int)clb->size; j++)
+            {
+                ec.CheckCollision(clb->cb[j].rect, &pos);
+            }
+        }
+
+        //Update
+
         void update(void)
         {
+            this->UpdateMovement();
+            this->UpdateCollision();
+            this->CheckCollision();
             if(ca.AnimationsLoaded)
             {
                 ca.updateAnimation();
             }
         }
+
+        //Rendering
 
         void RenderStatic(void)
         {

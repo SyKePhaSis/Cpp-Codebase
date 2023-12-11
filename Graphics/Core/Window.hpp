@@ -21,8 +21,19 @@ class Window {
         bool customCurs;
         const char* title;
 
+        Window(){}
 
-        Window(int h, int w, const char* t) {
+        Window(int w, int h, const char* t) {
+            width = w;
+            height = h;
+            title = t;
+            customCurs = false;
+            InitWindow(width, height, title);
+            SetTargetFPS(60);
+        }
+
+        void SetDimensions(int w, int h, const char* t)
+        {
             width = w;
             height = h;
             title = t;

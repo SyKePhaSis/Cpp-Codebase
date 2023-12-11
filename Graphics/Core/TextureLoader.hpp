@@ -35,24 +35,36 @@ class TextureList {
 
         //TextureList
 
-        TextureList(){
+        TextureList(void){
 
             //Texture List Parameters
             tid = 0;
             size = 0;
             capacity = TEXTURE_LIST_CAPACITY;
-            tiarray = (TextureItem*)malloc(capacity * sizeof(TextureItem));
+            tiarray = (TextureItem* )malloc(capacity * sizeof(TextureItem));
+            if(!tiarray)
+            {
+                printf("INFO: Allocated Memory For TextureList!\n");
+            } else {
+                printf("ERROR: Couldn't Allocate Memory For TextureList!\n");
+            }
 
             //Slots List
             sl.size = 0;
             sl.capacity = TEXTURE_LIST_CAPACITY;
-            sl.slots = (int* )malloc(sl.capacity * sizeof(TextureItem));
+            sl.slots = (int* )malloc(sl.capacity * sizeof(int));
+            if(!sl.slots)
+            {
+                printf("INFO: Allocated Memory For SlotsList!\n");
+            } else {
+                printf("ERROR: Couldn't Allocate Memory For SlotsList!\n");
+            }
             clearSlotsList();
         }
 
         int LoadTextureToList(const char* path)
         {
-            int id = getIdFromPath(path);
+            int id = getIdFromPath(path);   
             if(id == -1)
             {
                 int index = getIndexFromSlots();

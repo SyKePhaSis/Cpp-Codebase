@@ -6,7 +6,9 @@
 #include <fstream>
 #include <cstdio>
 #include <cmath>
+
 #include "../Libraries/RayLib/include/raylib.h"
+
 #include "Core/Definitions.hpp"
 #include "Core/Animation.hpp"
 #include "Core/TextureLoader.hpp"
@@ -42,25 +44,27 @@ class Grid {
         bool selectorActive;
         TileSelector ts;
 
-        Grid()
-        {
-            
-        }
+        Grid(){}
 
-        Grid(Rectangle grid_area, Vector2 tl)
+        Grid(Rectangle grid_area, Vector2 TileDimensions)
         {
             selectorActive = false;
             offset = (Vector2){grid_area.x, grid_area.y};
-            dimensions.y = ceil(grid_area.width/tl.x);
-            dimensions.x = ceil(grid_area.height/tl.y);
-            tileSize.x = tl.x;
-            tileSize.y = tl.y;
+            dimensions.y = ceil(grid_area.width/TileDimensions.x);
+            dimensions.x = ceil(grid_area.height/TileDimensions.y);
+            tileSize.x = TileDimensions.x;
+            tileSize.y = TileDimensions.y;
             tarray = (Tile*)malloc(dimensions.x * dimensions.y * sizeof(Tile));
             initializeTiles();
             printf("INFO: Allocating [%d] bytes for TileMap\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
         }
 
-        Grid(const char* asset_file, TextureList *tlp)
+        void AttachTextureList(TextureList *tlp)
+        {
+            tl = tlp;
+        }
+
+        void LoadGrid(const char* asset_file)
         {
             std::fstream dfile(asset_file);
             if(!dfile)
@@ -76,17 +80,17 @@ class Grid {
                 {
                     offset = posS;
                     dimensions = (GridDimensions){(int)ceil((posE.x - posS.x)/tileS.x),(int)ceil((posE.y - posS.y)/tileS.y)};
+                    printf("INFO: Grid Dimensions [%d,%d]\n", dimensions.x, dimensions.y);
                     tileSize = tileS;
                     selectorActive = false;
                     tarray = (Tile*)malloc(dimensions.x * dimensions.y * sizeof(Tile));
                     initializeTiles();
-                    printf("INFO: Allocating [%d] bytes for TileMap\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
-
+                    printf("INFO: Allocating [%d] bytes for Grid\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
                     if(tsb)
                     {
-                        char asset_file[32];
-                        int animLen;
-                        float animSpeed;
+                        char asset_file[32] = {0};
+                        int animLen = 0;
+                        float animSpeed = 0;
                         if(dfile << asset_file << animLen << animSpeed)
                         {
                             AttachTileSelector(asset_file, animLen, animSpeed);
@@ -139,6 +143,17 @@ class Grid {
             free(tarray);
         }
 
+        void DrawGrid(void)
+        {
+            for(int i = 0; i < dimensions.x; i++)
+            {
+                for(int j = 0; j < dimensions.y; j++)
+                {
+                    DrawRectangleLinesEx(tarray[i * dimensions.y + j].r, 1.0f, GREEN);
+                }
+            }
+        }
+
     private:
 
         void initializeTiles(void)
@@ -150,8 +165,8 @@ class Grid {
                     Tile t = (Tile){
                         (Vector2){(float)i,(float)j},
                         (Rectangle){
-                            j * tileSize.x + offset.x,
-                            i * tileSize.y + offset.y,
+                            i * tileSize.x + offset.x,
+                            j * tileSize.y + offset.y,
                             tileSize.x,
                             tileSize.y
                         }
@@ -166,16 +181,6 @@ class Grid {
             return &tarray[pos.x * dimensions.y + pos.y];
         }
 
-        void drawGrid(void)
-        {
-            for(int i = 0; i < dimensions.x; i++)
-            {
-                for(int j = 0; j < dimensions.y; j++)
-                {
-                    DrawRectangleLinesEx(tarray[i * dimensions.y + j].r, 0.5f, GREEN);
-                }
-            }
-        }
 };
 
 class Map {
@@ -184,11 +189,24 @@ class Map {
         Grid grid;
         TextureList* tl;
 
+        Map(void){}
+
         Map(TextureList* tlp, const char* path)
         {
             tl = tlp;
             tid = tl->LoadTextureToList(path);
             printf("INFO: Map Loaded Successfully! \n");
+        }
+
+        void AttachMap(const char* path){
+            tid = tl->LoadTextureToList(path);
+            printf("INFO: Map Attached Successfully! \n");
+        }
+
+        void AttachTextureList(TextureList* tlp)
+        {
+            tl = tlp;
+            grid.AttachTextureList(tlp);
         }
 
         void Render(void)
@@ -197,9 +215,9 @@ class Map {
             DrawTextureV(t, (Vector2){0.0f, 0.0f}, WHITE);
         }
 
-        void AttachGrid(Grid g)
+        void AttachGrid(const char* path)
         {
-            grid = g;
+            grid.LoadGrid(path);
         }
 };
 
