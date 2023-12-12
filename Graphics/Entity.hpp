@@ -20,6 +20,7 @@ class Entity {
         bool isSelected;
         TextureList *tl;
         Animations::CharacterAnimation ca;
+        Animations::ObjectAnimation selector;
         Collisions::EntityCollision ec;
         Collisions::List::Borders* clb;
 
@@ -70,6 +71,41 @@ class Entity {
             ca.loadFromAssetFile(tl,path);
         }
 
+        void AttachEntitySelector(const char* path)
+        {
+            selector = Animations::ObjectAnimation();
+            std::ifstream fdata(path);
+            if(!fdata)
+            {
+                printf("ERROR: Couldn't Load Entity Selector File [%s]\n", path);
+            } else {
+                char animpath[64];
+                float fanimSpeed;
+                int fanimLen;
+                if(fdata >> animpath >> fanimSpeed >> fanimLen)
+                {
+                    selector.addAnimation(tl,animpath,fanimSpeed,fanimLen);
+                    printf("INFO: Entity Selector Added From File [%s]\n", path);
+                }
+            }
+        }
+
+        //EntitySelection
+        void checkSelected(void)
+        {
+            if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+            {
+                Vector2 Mpos = GetMousePosition();
+                if(CheckCollisionPointRec(Mpos, this->ec.rect))
+                {
+                    isSelected = true;
+                } else
+                {
+                    isSelected = false;
+                }
+            }
+        }
+
         //Collisions
 
         void UpdateCollision(void)
@@ -97,6 +133,11 @@ class Entity {
             this->UpdateMovement();
             this->UpdateCollision();
             this->CheckCollision();
+            this->checkSelected();
+            if(isSelected)
+            {
+                this->selector.updateAnimation();
+            }
             if(ca.AnimationsLoaded)
             {
                 ca.updateAnimation();
@@ -104,6 +145,19 @@ class Entity {
         }
 
         //Rendering
+
+        void RenderSelector(void)
+        {
+            if(isSelected)
+            {
+                Rectangle r = selector.getAnimTextureCropPos();
+                r.width = r.width * size.x;
+                r.height = r.height * size.y;
+                r.x = r.x * size.x;
+                Texture2D t =  tl->getTextureFromId(selector.tId);
+                DrawTextureRec(t, r, pos, WHITE);
+            }
+        }
 
         void RenderStatic(void)
         {
@@ -128,6 +182,7 @@ class Entity {
             {
                 RenderStatic();
             }
+            this->RenderSelector();
         }
 
     private:

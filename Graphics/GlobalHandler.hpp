@@ -13,24 +13,24 @@
 class GlobalHandler
 {
     public:
-        Window win;
+        Window win {WIDTH,HEIGHT,WINDOW_NAME};
+        TextureList tl;
         CameraAdv cam;
         Collisions::Master cm;
-        TextureList tl;
         Map map;
         Character character;
 
         GlobalHandler(void)
         {
-            win.SetDimensions(WIDTH,HEIGHT,WINDOW_NAME);
             win.addCustomCursor(&tl, CURSOR_TEXTURE_PATH, (Vector2){32.0f, 32.0f});
             cm.LoadBordersFromFile(BORDER_PATH_FILE);
-            map.AttachGrid(GRID_FILE_PATH);
             map.AttachTextureList(&tl);
+            map.AttachGrid(GRID_FILE_PATH);
             map.AttachMap(MAP_PATH);
             character = Character("Ghosty", 0, (Vector2){64.0f, 64.0f}, &tl, "../assets/character/character.png", &cm.clb);
             character.LoadAnimationsFromFile("../assets/character/animations/assets.txt");
             character.pos = (Vector2){300.0f, 300.0f};
+            character.AttachEntitySelector("../assets/character/selector.txt");
             ToggleFullscreen();
         }
 
@@ -42,6 +42,7 @@ class GlobalHandler
         void UpdateFrame(void)
         {
             character.update();
+            map.Update();
         }
 
         void RenderFrame(void)
@@ -57,6 +58,7 @@ class GlobalHandler
                     cm.DrawBorders();
                     character.DrawCollision();
                 }
+                map.grid.DrawSelectedTile();
                 character.Render();
                 win.drawCursor(&tl);
                 cam.UpdateCameraStatic();

@@ -88,10 +88,10 @@ class Grid {
                     printf("INFO: Allocating [%d] bytes for Grid\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
                     if(tsb)
                     {
-                        char asset_file[32] = {0};
-                        int animLen = 0;
-                        float animSpeed = 0;
-                        if(dfile << asset_file << animLen << animSpeed)
+                        char asset_file[64];
+                        int animLen;
+                        float animSpeed;
+                        if(dfile >> asset_file >> animLen >> animSpeed)
                         {
                             AttachTileSelector(asset_file, animLen, animSpeed);
                         }
@@ -111,10 +111,16 @@ class Grid {
         {
             ts.size = tileSize;
             ts.oa = Animations::ObjectAnimation();
-            ts.oa.addAnimation(tl, file_path, animSpeed, animLen);
+            if(!tl)
+            {
+                printf("ERROR: TextureList not Attached In Grid!");
+            }else
+            {
+                ts.oa.addAnimation(tl, file_path, animSpeed, animLen);
+            }
         }
 
-        void drawSelectedTile(void)
+        void DrawSelectedTile(void)
         {
             Vector2 mousePos = GetMousePosition();
             for(int i = 0; i < dimensions.x; i++)
@@ -136,6 +142,11 @@ class Grid {
                     }
                 }
             }
+        }
+
+        void Update(void)
+        {
+            this->ts.oa.updateAnimation();
         }
 
         ~Grid(void)
@@ -201,6 +212,11 @@ class Map {
         void AttachMap(const char* path){
             tid = tl->LoadTextureToList(path);
             printf("INFO: Map Attached Successfully! \n");
+        }
+
+        void Update(void)
+        {
+            this->grid.Update();
         }
 
         void AttachTextureList(TextureList* tlp)

@@ -52,7 +52,7 @@ namespace Animations {
                 {
                     index = newIndex;
                     animfCounter = 0;
-                    animIndex = 0;            
+                    animIndex = 0;
                 }
             }
 
@@ -130,7 +130,7 @@ namespace Animations {
                 printf("INFO: Added Object Animation\n");
             }
 
-            void updateAdmination(void)
+            void updateAnimation(void)
             {
                 if(animfCounter >= (FRAME_RATE/animSpeed))
                 {
