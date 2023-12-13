@@ -22,23 +22,23 @@ class Entity {
         Animations::CharacterAnimation ca;
         Animations::ObjectAnimation selector;
         Collisions::EntityCollision ec;
-        Collisions::List::Borders* clb;
+        std::vector<Collisions::Border>* bv;
 
         //Constructors
 
         Entity(void){}
 
-        Entity(std::string n, int eid, Vector2 eSize, Collisions::List::Borders *clbp)
+        Entity(std::string n, int eid, Vector2 eSize, std::vector<Collisions::Border> *clbp)
         {
             name = n;
             id = eid;
             size = eSize;
             tid = -1;
             ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
-            clb = clbp;
+            bv = clbp;
         }
 
-        Entity(std::string n, int eid, Vector2 eSize, TextureList *tlp, const char* path, Collisions::List::Borders* clbp)
+        Entity(std::string n, int eid, Vector2 eSize, TextureList *tlp, const char* path, std::vector<Collisions::Border>* clbp)
         {
             name = n;
             id = eid;
@@ -46,7 +46,7 @@ class Entity {
             AttachTextureList(tlp);
             AttachTexture(path);
             ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
-            clb = clbp;
+            bv = clbp;
         }
 
         virtual void UpdateMovement(void){}
@@ -120,9 +120,9 @@ class Entity {
 
         void CheckCollision()
         {
-            for(int j = 0; j < (int)clb->size; j++)
+            for(size_t j = 0; j < bv->size(); j++)
             {
-                ec.CheckCollision(clb->cb[j].rect, &pos);
+                ec.CheckCollision(bv->at(j).rect, &pos);
             }
         }
 

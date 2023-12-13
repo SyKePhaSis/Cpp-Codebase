@@ -13,6 +13,9 @@
 #include "Core/Animation.hpp"
 #include "Core/TextureLoader.hpp"
 
+#include <memory>
+#include <vector>
+
 //STRUCTS
 typedef struct
 {
@@ -39,7 +42,7 @@ class Grid {
         GridDimensions dimensions;// (rows,columns)
         Vector2 tileSize;
         Vector2 offset;
-        Tile *tarray;
+        std::vector<std::vector<Tile>> tv;
         TextureList *tl;
         bool selectorActive;
         TileSelector ts;
@@ -54,7 +57,6 @@ class Grid {
             dimensions.x = ceil(grid_area.height/TileDimensions.y);
             tileSize.x = TileDimensions.x;
             tileSize.y = TileDimensions.y;
-            tarray = (Tile*)malloc(dimensions.x * dimensions.y * sizeof(Tile));
             initializeTiles();
             printf("INFO: Allocating [%d] bytes for TileMap\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
         }
@@ -83,7 +85,6 @@ class Grid {
                     printf("INFO: Grid Dimensions [%d,%d]\n", dimensions.x, dimensions.y);
                     tileSize = tileS;
                     selectorActive = false;
-                    tarray = (Tile*)malloc(dimensions.x * dimensions.y * sizeof(Tile));
                     initializeTiles();
                     printf("INFO: Allocating [%d] bytes for Grid\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
                     if(tsb)
@@ -123,19 +124,19 @@ class Grid {
         void DrawSelectedTile(void)
         {
             Vector2 mousePos = GetMousePosition();
-            for(int i = 0; i < dimensions.x; i++)
+            for(auto& row: tv)
             {
-                for(int j = 0; j < dimensions.y; j++)
+                for(auto& tile: row)
                 {
-                    if(CheckCollisionPointRec(mousePos, tarray[i * dimensions.y + j].r))
+                    if(CheckCollisionPointRec(mousePos, tile.r))
                     {
                         Rectangle r = ts.oa.getAnimTextureCropPos();
                         r.width = r.width * ts.size.x;
                         r.height = r.height * ts.size.y;
                         r.x = r.x * ts.size.x;
                         Vector2 tilePos = (Vector2){
-                            tarray[i * dimensions.y + j].r.x,
-                            tarray[i * dimensions.y + j].r.y
+                            tile.r.x,
+                            tile.r.y
                         };
                         Texture2D t =  tl->getTextureFromId(ts.oa.tId);
                         DrawTextureRec(t, r, tilePos, WHITE);
@@ -149,18 +150,13 @@ class Grid {
             this->ts.oa.updateAnimation();
         }
 
-        ~Grid(void)
-        {
-            free(tarray);
-        }
-
         void DrawGrid(void)
         {
-            for(int i = 0; i < dimensions.x; i++)
+            for(auto& row: tv)
             {
-                for(int j = 0; j < dimensions.y; j++)
+                for(auto& tile: row)
                 {
-                    DrawRectangleLinesEx(tarray[i * dimensions.y + j].r, 1.0f, GREEN);
+                    DrawRectangleLinesEx(tile.r, 1.0f, GREEN);
                 }
             }
         }
@@ -171,6 +167,7 @@ class Grid {
         {
             for(int i = 0; i < dimensions.x; i++)
             {
+                std::vector<Tile> row;
                 for(int j = 0; j < dimensions.y; j++)
                 {
                     Tile t = (Tile){
@@ -182,14 +179,15 @@ class Grid {
                             tileSize.y
                         }
                     };
-                    tarray[i * dimensions.y + j] = t;
+                    row.push_back(t);
                 }
+                tv.push_back(row);
             }
         }
 
         Tile* getTile(GridDimensions pos)
         {
-            return &tarray[pos.x * dimensions.y + pos.y];
+            return &tv.at(pos.x).at(pos.y);
         }
 
 };

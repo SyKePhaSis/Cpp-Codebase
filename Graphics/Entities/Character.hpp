@@ -7,17 +7,17 @@ class Character : public Entity {
 
         Character(){}
 
-        Character(std::string n, int eid, Vector2 eSize, Collisions::List::Borders *clbp)
+        Character(std::string n, int eid, Vector2 eSize, std::vector<Collisions::Border> *clbp)
         {
             name = n;
             id = eid;
             size = eSize;
             tid = -1;
             ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
-            clb = clbp;
+            bv = clbp;
         }
 
-        Character(std::string n, int eid, Vector2 eSize, TextureList *tlp, const char* path, Collisions::List::Borders* clbp)
+        Character(std::string n, int eid, Vector2 eSize, TextureList *tlp, const char* path, std::vector<Collisions::Border>* clbp)
         {
             name = n;
             id = eid;
@@ -25,7 +25,7 @@ class Character : public Entity {
             AttachTextureList(tlp);
             AttachTexture(path);
             ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
-            clb = clbp;
+            bv = clbp;
         }
 
         void UpdateMovement(void)
