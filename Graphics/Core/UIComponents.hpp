@@ -27,9 +27,11 @@ namespace UI {
                 show = !show;
             }
 
+            //Updating
+            virtual void Update(void){}
+
             //Drawing
-            virtual void Render(void)
-            {}
+            virtual void Render(void){}
     };
 
     namespace Components{
@@ -85,16 +87,41 @@ namespace UI {
                     show = true;
                 }
 
-                void Action(void)
+                 virtual void Action(void)
+                {}
+        };
+
+        class OpenButton : public Button {
+            public:
+                std::shared_ptr<UI::UIComponent> target;
+
+                OpenButton(void){}
+
+                OpenButton(TextureList *tlp, const char* path ,Vector2 Csize, Vector2 Cpos, std::shared_ptr<UI::UIComponent> component)
+                {
+                    this->AttachTextureList(tlp);
+                    this->AttachTexture(path);
+                    target = component;
+                    size = Csize;
+                    pos = Cpos;
+                    show = true;
+                }
+
+                void Update(void)
                 {
                     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
                     {
                         Vector2 Mpos = GetMousePosition();
                         if(CheckCollisionPointRec(Mpos, (Rectangle){pos.x, pos.y, size.x, size.y}))
                         {
-                            printf("Action");
+                            this->Action();
                         }
                     }
+                }
+
+                void Action(void)
+                {
+                    target->ToggleVisibility();
                 }
         };
     };
@@ -124,7 +151,6 @@ namespace UI {
             //Methods
             void AddComponent(std::shared_ptr<UIComponent> uic)
             {
-                printf("INFO: Pushed Back!\n");
                 children.push_back(uic);
             }
 
@@ -170,6 +196,13 @@ namespace UI {
             }
 
             //Drawing
+            void Update(void)
+            {
+                for(auto&& component: children)
+                {
+                    component->Update();
+                }
+            }
 
             void Render(void)
             {

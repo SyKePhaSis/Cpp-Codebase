@@ -23,3 +23,4 @@
 #define TEXTURE_LIST_CAPACITY 16
 
 #define DEBUG true
+#define UI_ONLY true

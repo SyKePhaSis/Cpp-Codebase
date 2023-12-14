@@ -40,6 +40,7 @@ class Grid {
 
     public:
         GridDimensions dimensions;// (rows,columns)
+        Vector2 spacing;
         Vector2 tileSize;
         Vector2 offset;
         std::vector<std::vector<Tile>> tv;
@@ -51,14 +52,20 @@ class Grid {
 
         Grid(Rectangle grid_area, Vector2 TileDimensions)
         {
-            selectorActive = false;
-            offset = (Vector2){grid_area.x, grid_area.y};
-            dimensions.y = ceil(grid_area.width/TileDimensions.x);
-            dimensions.x = ceil(grid_area.height/TileDimensions.y);
-            tileSize.x = TileDimensions.x;
-            tileSize.y = TileDimensions.y;
+            this->selectorActive = false;
+            this->offset = (Vector2){grid_area.x, grid_area.y};
+            this->dimensions.y = ceil(grid_area.width/TileDimensions.x);
+            this->dimensions.x = ceil(grid_area.height/TileDimensions.y);
+            this->tileSize.x = TileDimensions.x;
+            this->tileSize.y = TileDimensions.y;
+            this->spacing = (Vector2){0.0f, 0.0f};
             initializeTiles();
             printf("INFO: Allocating [%d] bytes for TileMap\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
+        }
+
+        void AddSpacing(void)
+        {
+
         }
 
         void AttachTextureList(TextureList *tlp)
@@ -80,11 +87,12 @@ class Grid {
                 int tsb;
                 if(dfile >> posS.x >> posS.y >> posE.x >> posE.y >> tileS.x >> tileS.y >> tsb)
                 {
-                    offset = posS;
-                    dimensions = (GridDimensions){(int)ceil((posE.x - posS.x)/tileS.x),(int)ceil((posE.y - posS.y)/tileS.y)};
+                    this->offset = posS;
+                    this->dimensions = (GridDimensions){(int)ceil((posE.x - posS.x)/tileS.x),(int)ceil((posE.y - posS.y)/tileS.y)};
                     printf("INFO: Grid Dimensions [%d,%d]\n", dimensions.x, dimensions.y);
-                    tileSize = tileS;
-                    selectorActive = false;
+                    this->tileSize = tileS;
+                    this->selectorActive = false;
+                    this->spacing = (Vector2){0.0f, 0.0f};
                     initializeTiles();
                     printf("INFO: Allocating [%d] bytes for Grid\n", (int)(dimensions.x * dimensions.y * sizeof(Tile)));
                     if(tsb)
@@ -173,8 +181,8 @@ class Grid {
                     Tile t = (Tile){
                         (Vector2){(float)i,(float)j},
                         (Rectangle){
-                            i * tileSize.x + offset.x,
-                            j * tileSize.y + offset.y,
+                            i * (tileSize.x + this->spacing.x) + offset.x,
+                            j * (tileSize.y + this->spacing.y) + offset.y,
                             tileSize.x,
                             tileSize.y
                         }
