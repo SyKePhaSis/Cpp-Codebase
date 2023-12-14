@@ -22,5 +22,5 @@
 #define TEXTURE_ARRAY_SIZE 8
 #define TEXTURE_LIST_CAPACITY 16
 
-#define DEBUG true
-#define UI_ONLY true
+#define DEBUG false
+#define UI_ONLY false

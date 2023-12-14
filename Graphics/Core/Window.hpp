@@ -7,6 +7,8 @@
 #include "TextureLoader.hpp"
 #include "../../Libraries/RayLib/include/raylib.h"
 
+#include <string>
+
 class Window {
 
     typedef struct
@@ -19,26 +21,26 @@ class Window {
         int width;
         int height;
         bool customCurs;
-        const char* title;
+        std::string title;
 
-        Window(){}
+        Window(void){}
 
-        Window(int w, int h, const char* t) {
+        Window(int w, int h, const std::string t) {
             width = w;
             height = h;
             title = t;
             customCurs = false;
-            InitWindow(width, height, title);
+            InitWindow(width, height, title.c_str());
             SetTargetFPS(60);
         }
 
-        void SetDimensions(int w, int h, const char* t)
+        void SetParameters(int w, int h, const std::string t)
         {
             width = w;
             height = h;
             title = t;
             customCurs = false;
-            InitWindow(width, height, title);
+            InitWindow(width, height, title.c_str());
             SetTargetFPS(60);
         }
 
@@ -51,7 +53,7 @@ class Window {
             }
         }
 
-        void addCustomCursor(TextureList* tl, const char* asset_text_file, Vector2 size)
+        void addCustomCursor(TextureList* tl, std::string asset_text_file, Vector2 size)
         {
             customCurs = true;
             c.size = size;

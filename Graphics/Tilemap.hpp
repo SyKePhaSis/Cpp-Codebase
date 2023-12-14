@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cstdio>
 #include <cmath>
+#include <string>
 
 #include "../Libraries/RayLib/include/raylib.h"
 
@@ -73,14 +74,14 @@ class Grid {
             tl = tlp;
         }
 
-        void LoadGrid(const char* asset_file)
+        void LoadGrid(std::string asset_file)
         {
             std::fstream dfile(asset_file);
             if(!dfile)
             {
-                printf("ERROR: Couldn't open the grid asset file [%s]\n", asset_file);
+                printf("ERROR: Couldn't open the grid asset file [%s]\n", asset_file.c_str());
             } else {
-                printf("INFO: Opened the grid asset file [%s]\n", asset_file);
+                printf("INFO: Opened the grid asset file [%s]\n", asset_file.c_str());
                 Vector2 posS;
                 Vector2 posE;
                 Vector2 tileS;
@@ -215,7 +216,7 @@ class Map {
             printf("INFO: Map Loaded Successfully! \n");
         }
 
-        void AttachMap(const char* path){
+        void AttachMap(std::string path){
             tid = tl->LoadTextureToList(path);
             printf("INFO: Map Attached Successfully! \n");
         }
@@ -237,7 +238,7 @@ class Map {
             DrawTextureV(t, (Vector2){0.0f, 0.0f}, WHITE);
         }
 
-        void AttachGrid(const char* path)
+        void AttachGrid(std::string path)
         {
             grid.LoadGrid(path);
         }

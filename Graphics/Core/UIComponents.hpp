@@ -43,7 +43,7 @@ namespace UI {
 
                 Texture(void){}
 
-                Texture(TextureList *tlp, const char* path ,Vector2 Csize, Vector2 Cpos)
+                Texture(TextureList *tlp, std::string path ,Vector2 Csize, Vector2 Cpos)
                 {
                     this->AttachTextureList(tlp);
                     this->AttachTexture(path);
@@ -57,7 +57,7 @@ namespace UI {
                     tl = tlp;
                 }
 
-                void AttachTexture(const char* path)
+                void AttachTexture(std::string path)
                 {
                     if(!tl)
                     {
@@ -78,7 +78,7 @@ namespace UI {
             public:
                 Button(void){}
 
-                Button(TextureList *tlp, const char* path ,Vector2 Csize, Vector2 Cpos)
+                Button(TextureList *tlp, std::string path ,Vector2 Csize, Vector2 Cpos)
                 {
                     this->AttachTextureList(tlp);
                     this->AttachTexture(path);
@@ -97,7 +97,7 @@ namespace UI {
 
                 OpenButton(void){}
 
-                OpenButton(TextureList *tlp, const char* path ,Vector2 Csize, Vector2 Cpos, std::shared_ptr<UI::UIComponent> component)
+                OpenButton(TextureList *tlp, std::string path ,Vector2 Csize, Vector2 Cpos, std::shared_ptr<UI::UIComponent> component)
                 {
                     this->AttachTextureList(tlp);
                     this->AttachTexture(path);
@@ -140,7 +140,7 @@ namespace UI {
                 show = true;
             }
 
-            UIParent(const char* n, Vector2 Cpos, Vector2 Csize)
+            UIParent(std::string n, Vector2 Cpos, Vector2 Csize)
             {
                 name = n;
                 pos = Cpos;
@@ -160,15 +160,15 @@ namespace UI {
             }
 
             //Loading
-            void LoadUIComponentsFromFile(const char* path)
+            void LoadUIComponentsFromFile(std::string path)
             {
                 std::fstream dfile(path);
                 if(!dfile)
                 {
-                    printf("ERROR: Couldn't Open UIComponent File [%s]\n", path);
+                    printf("ERROR: Couldn't Open UIComponent File [%s]\n", path.c_str());
                 }
                 else {
-                    printf("INFO: Opened UIComponent File [%s]\n", path);
+                    printf("INFO: Opened UIComponent File [%s]\n", path.c_str());
                     char type[32];
                     while(dfile >> type)
                     {

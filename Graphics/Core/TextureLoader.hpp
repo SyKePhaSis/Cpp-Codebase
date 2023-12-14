@@ -6,8 +6,9 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <stdbool.h>
-#include <string.h>
+#include <cstdbool>
+#include <string>
+#include <cstring>
 #include <vector>
 
 #include "Definitions.hpp"
@@ -18,7 +19,7 @@ class TextureList {
     {
         int id;
         Texture2D text;
-        char path[64];
+        std::string path;
     } TextureItem;
 
     public:
@@ -35,19 +36,19 @@ class TextureList {
             size = 0;
         }
 
-        int LoadTextureToList(const char* path)
+        int LoadTextureToList(const std::string path)
         {
             int id = getIdFromPath(path);
             if(id == -1)
             {
                 TextureItem ti;
                 ti.id = tid;
-                strcpy(ti.path,path);
-                ti.text = LoadTexture(path);
+                ti.path = path;
+                ti.text = LoadTexture(path.c_str());
                 tiarray.push_back(ti);
                 tid++;
                 size++;
-                printf("INFO: Loaded Texture [%s] to [TextureArray]\n",path);
+                printf("INFO: Loaded Texture [%s] to [TextureArray]\n",path.c_str());
                 return ti.id;
             }
             return id;
@@ -81,11 +82,11 @@ class TextureList {
 
     private:
 
-        int getIdFromPath(const char* path)
+        int getIdFromPath(const std::string path)
         {
             for(int i = 0; i < size; i++)
             {
-                if(strcmp(tiarray[i].path, path) == 0){
+                if(tiarray[i].path.compare(path) == 0){
                     return tiarray[i].id;
                 }
             }

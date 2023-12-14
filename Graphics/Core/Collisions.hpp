@@ -121,12 +121,12 @@ namespace Collisions
             Master(void)
             {}
 
-            void LoadBordersFromFile(const char* border_file)
+            void LoadBordersFromFile(const std::string border_file)
             {
                 std::fstream dfile(border_file);
                 if(!dfile)
                 {
-                    printf("ERROR: Couldn't open Border Asset File\n");
+                    printf("ERROR: Couldn't open Border Asset File [%s]\n", border_file.c_str());
                 } else {
                     Rectangle r = (Rectangle){0.0f,0.0f,0.0f,0.0f};
                     Vector2 v = (Vector2){0.0f, 0.0f};
@@ -136,7 +136,7 @@ namespace Collisions
                         r.height = abs(r.y - v.y);
                         Collisions::Border border(r);
                         bv.push_back(border);
-                        printf("INFO: Added Border from [%s]\n", border_file);
+                        printf("INFO: Added Border from [%s]\n", border_file.c_str());
                     }
                 }
                 dfile.close();
