@@ -1,6 +1,6 @@
 #include "../../Libraries/RayLib/include/raylib.h"
-#include "../Entity.hpp"
 #include "../Core/Config.hpp"
+#include "Entity.hpp"
 
 #include <string>
 
@@ -13,10 +13,9 @@ class Character : public Entity {
 
         Character(void){}
 
-        Character(std::string n, int eid, Vector2 eSize, std::vector<Collisions::Border> *clbp, Config* config)
+        Character(std::string n, Vector2 eSize, std::vector<Collisions::Border> *clbp, Config* config)
         {
             name = n;
-            id = eid;
             size = eSize;
             tid = -1;
             ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
@@ -24,12 +23,11 @@ class Character : public Entity {
             this->SetFromConfig(config);
         }
 
-        Character(std::string n, int eid, Vector2 eSize, TextureList *tlp, const char* path, std::vector<Collisions::Border>* clbp, Config* config)
+        Character(std::string n, Vector2 eSize, std::shared_ptr<TextureList> tlp, std::string path, std::vector<Collisions::Border>* clbp, Config* config)
         {
             name = n;
-            id = eid;
             size = eSize;
-            AttachTextureList(tlp);
+            tl = tlp;
             AttachTexture(path);
             ec = Collisions::EntityCollision((Rectangle){pos.x, pos.y, size.x, size.y});
             bv = clbp;
@@ -43,7 +41,7 @@ class Character : public Entity {
             FrameRate = std::stoi(config->GetValue("FRAME_RATE"));
         }
 
-        void UpdateMovement(void)
+        void UpdateMovement(void) override
         {
             int sprint = 0;
             int walk = 0;

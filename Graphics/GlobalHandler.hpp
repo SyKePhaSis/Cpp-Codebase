@@ -9,10 +9,12 @@
 #include "Core/Collisions.hpp"
 #include "Core/UIComponents.hpp"
 #include "Core/Config.hpp"
-#include "Entities/Character.hpp"
+#include "Entities/EntityList.hpp"
+
 #include "Tilemap.hpp"
 
 #include <string>
+#include <memory>
 
 class GlobalHandler
 {
@@ -22,12 +24,14 @@ class GlobalHandler
         CameraAdv cam;
         Collisions::Master cm;
         Map map;
-        Character character;
         UI::UIParent uiroot;
         Config config;
+        EntityList el;
 
         GlobalHandler(void)
         {
+
+
             config.LoadConfig("../include/config.ini");
 
             win.SetParameters(std::stoi(config.GetValue("WIDTH")), std::stoi(config.GetValue("HEIGHT")), config.GetValue("TITLE"));
@@ -39,11 +43,8 @@ class GlobalHandler
             map.AttachGrid(config.GetValue("GRID_FILE_PATH"));
             map.AttachMap(config.GetValue("MAP_PATH"));
 
-            character = Character("Ghosty", 0, (Vector2){64.0f, 64.0f}, &tl, "../assets/character/character.png", &cm.bv, &this->config);
-            character.LoadAnimationsFromFile("../assets/character/animations/assets.txt");
-            character.pos = (Vector2){300.0f, 300.0f};
-            character.AttachEntitySelector("../assets/character/selector.txt");
-
+            el.AttachAll(&cm.bv, tl, config);
+            el.LoadEntitiesFromFile(config.GetValue("ENTITY_FILE_LIST"));
             ToggleFullscreen();
         }
 
@@ -54,7 +55,7 @@ class GlobalHandler
 
         void UpdateFrame(void)
         {
-            character.update();
+            el.Update();
             uiroot.Update();
             map.Update();
         }
@@ -72,10 +73,9 @@ class GlobalHandler
                     {
                         map.grid.DrawGrid();
                         cm.DrawBorders();
-                        character.DrawCollision();
                     }
                     map.grid.DrawSelectedTile();
-                    character.Render();
+                    el.Render();
                     uiroot.Render();
                     win.drawCursor(&tl);
                     cam.UpdateCameraStatic();

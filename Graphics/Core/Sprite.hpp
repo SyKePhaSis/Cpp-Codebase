@@ -2,22 +2,21 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
-//VARIABLES
-int sid = 0;
-
 // INCLUDES
 #include "../Libraries/RayLib/include/raylib.h"
-#include "Core/Animation.hpp"
-#include "Core/Definitions.hpp"
-#include "Core/TextureLoader.hpp"
+#include "Animation.hpp"
+#include "Definitions.hpp"
+#include "TextureLoader.hpp"
+
+#include <memory>
 
 class Sprite {
 
     public:
         int id;
-        Vector2 pos;
         int tid;
-        TextureList *tl;
+        Vector2 pos;
+        std::smart_ptr<TextureList> tl;
 
         Sprite(int id)
         {
@@ -33,10 +32,10 @@ class Sprite {
 
         void AttachTextureList(TextureList *tlp)
         {
-            tl = tlp;
+            tl = std::make_shared<TextureList>(tlp);
         }
 
-        void render(void)
+        void Render(void)
         {
             Texture2D t = tl->getTextureFromId(tid);
             DrawTextureV(t, pos, WHITE);

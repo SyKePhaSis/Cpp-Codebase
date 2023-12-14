@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
+#include <vector>
 
 #include "../../Libraries/RayLib/include/raylib.h"
 #include "TextureLoader.hpp"
@@ -17,33 +18,26 @@ namespace Animations {
         public:
             bool AnimationsLoaded;
             int animIndex;
-            float animSpeed[TEXTURE_ARRAY_SIZE];
-            int animLen[TEXTURE_ARRAY_SIZE];
+            std::vector<float> animSpeed;
+            std::vector<int> animLen;
             int animfCounter;
-            int tidarray[TEXTURE_ARRAY_SIZE];
+            std::vector<int> tidarray;
             int index;
-            int size;
 
             CharacterAnimation(void)
             {
                 index = 0;
                 animIndex = 0;
-                size = 0;
                 animfCounter = 0;
             }
 
             void addAnimation(int tid, float animationSpeed, int animationLen)
             {
-                if(size < TEXTURE_ARRAY_SIZE)
-                {
-                    tidarray[size] = tid;
-                    animSpeed[size] = animationSpeed;
-                    animLen[size] = animationLen;
-                    size++;
-                    AnimationsLoaded = true;
-                } else {
-                    printf("INFO: Animation Array For Character is full!\n");
-                }
+                tidarray.push_back(tid);
+                animSpeed.push_back(animationSpeed);
+                animLen.push_back(animationLen);
+                AnimationsLoaded = true;
+                printf("INFO: Added Animation!");
             }
 
             void changeIndex(int newIndex)
@@ -56,23 +50,23 @@ namespace Animations {
                 }
             }
 
-            void loadFromAssetFile(TextureList* tl, const char* asset_file_path)
+            void loadFromAssetFile(TextureList* tl, std::string asset_file_path)
             {
                 std::ifstream fdata(asset_file_path);
                 if(!fdata)
                 {
                     printf("ERROR: Couldn't Load Asset Files\n");
                 } else {
-                    printf("INFO: Successfully opened asset file [%s]\n", asset_file_path);
-                    char tdpath[64];
+                    printf("INFO: Successfully opened asset file [%s]\n", asset_file_path.c_str());
+                    std::string tdpath;
                     float fanimSpeed;
                     int fanimLen;
                     int tid;
                     while(fdata >> tdpath >> fanimSpeed >> fanimLen)
                     {
                         tid = tl->LoadTextureToList(tdpath);
-                        addAnimation(tid, fanimSpeed, fanimLen);
-                        printf("INFO: Loaded Animation from '%s' with TextureId [%d]\n", tdpath, tid);
+                        this->addAnimation(tid, fanimSpeed, fanimLen);
+                        printf("INFO: Loaded Animation from '%s' with TextureId [%d]\n", tdpath.c_str(), tid);
                     }
                     fdata.close();
                 }
@@ -80,10 +74,10 @@ namespace Animations {
 
             void updateAnimation(void)
             {
-                if(animfCounter >= (FRAME_RATE/animSpeed[index]))
+                if(animfCounter >= (FRAME_RATE/animSpeed.at(index)))
                 {
                     animfCounter = 0;
-                    if(animIndex < animLen[index])
+                    if(animIndex < animLen.at(index))
                     {
                         animIndex++;
                     }
@@ -122,7 +116,7 @@ namespace Animations {
                 animfCounter = 0;
             }
 
-            void addAnimation(TextureList* tl, const char* path, float animationSpeed, int animationLen)
+            void addAnimation(TextureList* tl, std::string path, float animationSpeed, int animationLen)
             {
                 tId = tl->LoadTextureToList(path);
                 animSpeed = animationSpeed;
